@@ -1,4 +1,6 @@
 # phonegap
+PushBots' official module for Phonegap
+http://pushbots.com/developer/docs/phonegap
 
 ##Installation
 ```bash
