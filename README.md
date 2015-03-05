@@ -1,8 +1,9 @@
 # phonegap
 
 ##Installation
-
+```bash
 cordova plugin add com.pushbots.push
+```
 
 ##Usage
 1. Intialize Pushbots in deviceReady section:
