@@ -17,7 +17,6 @@ cordova plugin add com.pushbots.push
   
   ```
 
-
 2. For Android only, Open res/values/pushbots.xml and update your Application ID/GCM sender ID:
 ```xml
   <?xml version="1.0" encoding="utf-8"?>
