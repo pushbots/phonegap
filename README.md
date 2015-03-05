@@ -7,12 +7,17 @@ cordova plugin add com.pushbots.push
 
 ##Usage
 1. Intialize Pushbots in deviceReady section:
+```javascript
   onDeviceReady: function() {
       app.receivedEvent('deviceready');
       PushbotsPlugin.initialize("PUSHBOTS_APPID");
   }
+  
+  ```
+
 
 2. For Android only, Open res/values/pushbots.xml and update your Application ID/GCM sender ID:
+```xml
   <?xml version="1.0" encoding="utf-8"?>
   <resources>
       <!-- Pushbots Application ID  -->
@@ -20,6 +25,8 @@ cordova plugin add com.pushbots.push
       <!-- GCM Sender ID -->
       <string name="pb_senderid">48849973</string>
       <!-- Pushbots Log Level  log Tag "PB2" -->
+      
+  ```
       <string name="pb_logLevel">DEBUG</string>
   </resources>
 2. Methods to use it:
