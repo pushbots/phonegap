@@ -55,6 +55,19 @@ public class PushbotsPlugin extends CordovaPlugin {
 			}
 		}
 		
+		if (action.equals("debug")) {
+			Boolean debug;
+			try {
+				debug = args.getBoolean(0);
+				Pushbots.sharedInstance().debug(debug);
+				cb.success("Device set as debugging device.");
+			} catch (JSONException e) {
+				cb.error("Error updating debug tag.");
+				e.printStackTrace();
+				return false;
+			}
+		}
+		
 		if (action.equals("untag")) {
 			String tag;
 			try {

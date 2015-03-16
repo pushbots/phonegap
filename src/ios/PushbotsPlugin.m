@@ -31,6 +31,20 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
+- (void) debug:(CDVInvokedUrlCommand *)command
+{
+    NSLog(@"Executing debug(debug)");
+    
+    CDVPluginResult* pluginResult = nil;
+    
+    BOOL debug = [[command.arguments objectAtIndex:0]  isEqual:[NSNumber numberWithInt:1]];
+	
+	[[Pushbots sharedInstance] debug:debug];
+
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
 - (void) tag:(CDVInvokedUrlCommand *)command
 {
     NSLog(@"Executing tag(Tag)");

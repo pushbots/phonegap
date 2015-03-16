@@ -26,6 +26,15 @@ var PushbotsPlugin = {
             [tag]
         );
     },
+    debug: function(debug) {
+        cordova.exec(
+            this.success,
+            this.fail,
+            'PushbotsPlugin',
+            'debug',
+            [debug]
+        );
+    },
     untag: function(untag) {
         cordova.exec(
             this.success,

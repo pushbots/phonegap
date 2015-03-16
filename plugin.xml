@@ -2,14 +2,14 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="com.pushbots.push"
-    version="1.0.0">
+    version="1.1.0">
 
 	<name>Pushbots</name>
 	
 	<description>PushBots plugin for phonegap.</description>
 	
-    <repo>https://github.com/wf9a5m75/phonegap-googlemaps-plugin/</repo>
-    <issue>https://github.com/wf9a5m75/phonegap-googlemaps-plugin/issues</issue>
+    <repo>https://github.com/pushbots/phonegap</repo>
+    <issue>https://github.com/pushbots/phonegap/issues</issue>
 	
     <license>Apache 2.0</license>
 	
@@ -71,7 +71,7 @@
 		</config-file>
 		
 		<source-file src="src/android/com/pushbots/plugin/PushbotsPlugin.java" target-dir="src/com/pushbots/plugin" />
-		<source-file src="src/android/libs/pushbots-lib-2.0.9.jar" target-dir="libs/" />
+		<source-file src="src/android/libs/pushbots-lib-2.0.11.jar" target-dir="libs/" />
 		<source-file src="src/android/res/values/pushbots.xml" target-dir="res/values" />
 	</platform>
 	
