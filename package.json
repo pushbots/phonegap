@@ -1,0 +1,32 @@
+{
+    "version": "1.1.1",
+    "name": "com.pushbots.push",
+    "cordova_name": "Pushbots",
+    "description": "PushBots plugin for phonegap.",
+    "license": "Apache 2.0",
+    "repo": "https://github.com/pushbots/phonegap",
+    "issue": "https://github.com/pushbots/phonegap/issues",
+    "keywords": [
+        "push",
+        "notifications",
+        "pushnotifications",
+        "apns",
+        "GCM",
+        "C2DM",
+        "Android push notifications",
+        "helium",
+        "APNS",
+        "Push Bots",
+        "PushBots"
+    ],
+    "platforms": [
+        "android",
+        "ios"
+    ],
+    "engines": [
+        {
+            "name": "cordova",
+            "version": ">=3.5.0"
+        }
+    ]
+}
