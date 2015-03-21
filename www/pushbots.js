@@ -5,7 +5,20 @@ var PushbotsPlugin = {
 		appId = typeof appId !== 'undefined' ? appId : null;
 		cordova.exec( this.success, this.fail, 'PushbotsPlugin', 'initializeWithAppId', [appId] );
     },
-
+	
+	
+    initializeAndroid: function(appId, sender_id) {
+		if(this.isAndroid){
+			cordova.exec( this.success, this.fail, 'PushbotsPlugin', 'initializeWithAppIdAndSenderId', [appId, sender_id] );
+		}
+    },
+	
+    initializeiOS: function(appId) {
+		if(this.isiOS){
+			cordova.exec( this.success, this.fail, 'PushbotsPlugin', 'initializeWithAppId', [appId] );
+		}
+    },
+	
 	//Check for iOS platform
 	isiOS : function () {
 	    return ( navigator.userAgent.indexOf("iPhone") > 0 || navigator.userAgent.indexOf("iPad") > 0 || navigator.userAgent.indexOf("iPod") > 0); 

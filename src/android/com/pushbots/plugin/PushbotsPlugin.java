@@ -20,6 +20,11 @@ public class PushbotsPlugin extends CordovaPlugin {
 			return true;
 		}
 		
+		if (action.equals("initializeWithAppIdAndSenderId")) {
+			this.initializeSender(cb, args);
+			return true;
+		}
+		
 		if (action.equals("setAlias")) {
 			String alias;
 			try {
@@ -84,6 +89,16 @@ public class PushbotsPlugin extends CordovaPlugin {
 		}
 		
 		return true;
+	}
+	
+	private void initializeSender(final CallbackContext cb, final JSONArray args) {
+		try {
+			Pushbots.sharedInstance().init(cordova.getActivity(), args.getString(0), args.getString(1), "DEBUG");
+			cb.success();
+		} catch (JSONException e) {
+			cb.error("Error initializing the app.");
+			e.printStackTrace();
+		}
 	}
 	
 	private void initialize(final CallbackContext cb, final JSONArray args) {
