@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="com.pushbots.push"
-    version="1.1.2">
+    version="1.2.0">
 
 	<name>Pushbots</name>
 	
@@ -11,18 +11,18 @@
     <repo>https://github.com/pushbots/phonegap</repo>
     <issue>https://github.com/pushbots/phonegap/issues</issue>
 	
+	<author>Abdullah Diaa</author>
+	  
     <license>Apache 2.0</license>
 	
-	<keywords>push, notifications, pushnotifications, apns, GCM, C2DM, Android push notifications, helium, APNS,Push Bots, PushBots</keywords>
+	<keywords>push, notifications, pushnotifications, apns, GCM, C2DM, Android push notifications, helium, APNS,Push Bots, PushBots, phonegap</keywords>
 	
 	<engines>
         <!-- Requires > 3.3.* because of the custom Framework tag for iOS [CB-5238] -->
         <!-- Requires > 3.5.0 because of the custom Framework tag for Android [CB-6698] -->
         <engine name="cordova" version=">=3.5.0" />
 	</engines>
-	
-	<dependency id="org.apache.cordova.device" />
-	
+		
      <!-- JavaScript interface -->
      <js-module src="www/pushbots.js"
                 name="PushbotsPlugin"
@@ -35,7 +35,7 @@
 		
         <info>
              In order to run this plugin, you need to Create application on Pushbots.
-             Visit to https://pushbots.com
+             Visit to https://pushbots.com/developer/docs/phonegap#Android
         </info>
 		
 		<config-file target="res/xml/config.xml" parent="/widget">
@@ -45,36 +45,46 @@
 		</config-file>
 
 		<config-file target="AndroidManifest.xml" parent="/manifest">
-		    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-			<permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE"	 android:protectionLevel="signature" />
+			<!-- GCM connects to Google Services. -->
+			<uses-permission android:name="android.permission.INTERNET" />
+			<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+			<!-- GCM requires a Google account. -->
+			<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+			<uses-permission android:name="android.permission.WAKE_LOCK" />
+			<permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" android:protectionLevel="signature" />
 			<uses-permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" />
-		    <uses-permission android:name="android.permission.INTERNET" />
-		    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-		    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-		    <uses-permission android:name="android.permission.WAKE_LOCK" />
-		    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+			<!-- This app has permission to register and receive dataf message. -->
+			<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 		</config-file>
 
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
-	        <receiver
-	            android:name="com.pushbots.google.gcm.GCMBroadcastReceiver"
-	            android:permission="com.google.android.c2dm.permission.SEND" >
-	            <intent-filter>
-	                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-	                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-	                <category android:name="$PACKAGE_NAME" />
-	            </intent-filter>
-	        </receiver>
-	        <receiver android:name="$PACKAGE_NAME.customPush" />
-	        <service android:name="com.pushbots.push.GCMIntentService" />
-	        <receiver android:name="com.pushbots.push.DefaultPushHandler" />
+			<receiver android:name="com.pushbots.google.gcm.GCMBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND">
+			    <intent-filter>
+			        <!-- Receives the actual messages. -->
+			        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+			        <!-- Receives the registration id. -->
+			        <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+			        <category android:name="$PACKAGE_NAME" />
+			    </intent-filter>
+			</receiver>
+			<receiver android:name="com.pushbots.push.DefaultPushHandler" />
+			<service android:name="com.pushbots.push.GCMIntentService" />
+		</config-file>
+		
+		<config-file target="AndroidManifest.xml" parent="/*/application/activity">
+			<intent-filter>
+			    <action android:name="$PACKAGE_NAME.MESSAGE" />
+			    <category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
 		</config-file>
 		
 		<dependency id="android.support.v4" />
 		
 		<source-file src="src/android/com/pushbots/plugin/PushbotsPlugin.java" target-dir="src/com/pushbots/plugin" />
-		<source-file src="src/android/libs/pushbots-lib-2.0.11.jar" target-dir="libs/" />
+
 		<source-file src="src/android/res/values/pushbots.xml" target-dir="res/values" />
+		
+		<source-file src="src/android/libs/pushbots-lib-2.0.11.jar" target-dir="libs/" />
 	</platform>
 	
     <!-- iPhone -->
@@ -88,9 +98,12 @@
 
        <info>
             In order to run this plugin, you need to Create application on Pushbots.
-            Visit to https://pushbots.com
+            Visit to https://pushbots.com/developer/docs/phonegap#iOS
        </info>
-	   
+
+       <header-file src="src/ios/PushbotsDelegate.h" />
+       <source-file src="src/ios/PushbotsDelegate.m" />
+	   	   
        <header-file src="src/ios/PushbotsPlugin.h" />
        <source-file src="src/ios/PushbotsPlugin.m" />
 	   	   

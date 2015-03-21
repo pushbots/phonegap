@@ -2,19 +2,19 @@
 
 @implementation PushbotsPlugin
 
-
-- (void) initializeWithAppId:(CDVInvokedUrlCommand *)command
-{
-    NSLog(@"Executing initializeWithAppId(APP_ID)");
-    
+- (void)initializeWithAppId:(CDVInvokedUrlCommand*)command {
+[self.commandDelegate runInBackground:^{
     CDVPluginResult* pluginResult = nil;
-    
+	
     NSString* appId = [command.arguments objectAtIndex:0];
-	
-	[Pushbots sharedInstanceWithAppId:appId];
-	
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+		[Pushbots sharedInstanceWithAppId:appId];
+    });
+
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}];
 }
 
 - (void) setAlias:(CDVInvokedUrlCommand *)command
@@ -26,6 +26,21 @@
     NSString* alias = [command.arguments objectAtIndex:0];
 	
 	[[Pushbots sharedInstance] sendAlias:alias];
+
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+
+- (void) registerOnPushbots:(CDVInvokedUrlCommand *)command
+{
+    NSLog(@"Executing registerOnPushbots(token)");
+    
+    CDVPluginResult* pluginResult = nil;
+    
+    NSString* token = [command.arguments objectAtIndex:0];
+	
+	[[Pushbots sharedInstance] registerOnPushbots:token];
 
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -105,4 +120,5 @@
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
+
 @end
