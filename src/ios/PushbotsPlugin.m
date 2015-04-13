@@ -94,10 +94,7 @@
     
     CDVPluginResult* pluginResult = nil;
 	
-	// Reset badge locally
-	[[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-	// Reset badge on the server
-	[[Pushbots sharedInstance] resetBadgeCount];
+	[[Pushbots sharedInstance] clearBadgeCount];
 
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -112,10 +109,7 @@
     NSString* count = [command.arguments objectAtIndex:0];
 	int badge = [count intValue];
 	
-	// set Badge count 
-	[[UIApplication sharedApplication] setApplicationIconBadgeNumber:badge];
-	// set badge on the server
-	[[Pushbots sharedInstance] setBadgeCount:count];
+	[[Pushbots sharedInstance] setBadge:badge];
 
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
