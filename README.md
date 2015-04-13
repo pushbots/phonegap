@@ -14,11 +14,11 @@ cordova plugin add com.pushbots.push
 onDeviceReady: function() {
 	app.receivedEvent('deviceready');
 
-	if(PushbotsPlugin.isiOS){
+	if(PushbotsPlugin.isiOS()){
 		PushbotsPlugin.initialize("PUSHBOTS_APP_ID");
 	}
 	
-	if(PushbotsPlugin.isAndroid){
+	if(PushbotsPlugin.isAndroid()){
 		//Update res/values/pushbots.xml with Pushbots Application ID and sender ID
 		PushbotsPlugin.initialize();
 	}
