@@ -1,5 +1,5 @@
 {
-    "version": "1.2.2pl",
+    "version": "1.2.2",
     "name": "com.pushbots.push",
     "cordova_name": "Pushbots",
     "description": "PushBots plugin for phonegap.",
@@ -17,8 +17,7 @@
         "helium",
         "APNS",
         "Push Bots",
-        "PushBots",
-        "phonegap"
+        "PushBots"
     ],
     "platforms": [
         "android",

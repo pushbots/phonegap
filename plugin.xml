@@ -84,7 +84,7 @@
 
 		<source-file src="src/android/res/values/pushbots.xml" target-dir="res/values" />
 		
-		<source-file src="src/android/libs/pushbots-lib-2.0.11.jar" target-dir="libs/" />
+		<source-file src="src/android/libs/pushbots-lib-2.0.13.jar" target-dir="libs/" />
 	</platform>
 	
     <!-- iPhone -->
