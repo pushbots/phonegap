@@ -24,6 +24,7 @@ onDeviceReady: function() {
 }
 ```
 
+
 2. Methods to use it:
 ```javascript
 //iOS && Android
@@ -48,3 +49,20 @@ PushbotsPlugin.resetBadge();
 //Set badge
 PushbotsPlugin.setBadge(10);
  ```
+ 
+ 
+ 3. To handle Notifications payload on Click [Android only]
+ 
+Add this method to **index.js**
+ ```
+ function myMsgClickHandler(msg){
+     console.log("Clicked On notification" + JSON.stringify(msg));
+     alert(JSON.stringify(msg));
+ }
+```
+
+Then set Notification click event:
+
+```
+PushbotsPlugin.onNotificationClick(myMsgClickHandler);
+```
