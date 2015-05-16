@@ -21,7 +21,7 @@ var PushbotsPlugin = {
 
 	//Check for iOS platform
 	isiOS : function () {
-	    return ( navigator.userAgent.indexOf("iPhone") > 0 || navigator.userAgent.indexOf("iPad") > 0 || navigator.userAgent.indexOf("iPod") > 0);
+		return /iPhone|iPad|iPod/.test(navigator.userAgent);
 	},
 
 	//Check for Android platform
