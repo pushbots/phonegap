@@ -2,42 +2,42 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="com.pushbots.push"
-    version="1.2.3">
+    version="1.2.4">
 
 	<name>Pushbots</name>
-	
+
 	<description>PushBots plugin for phonegap.</description>
-	
+
     <repo>https://github.com/pushbots/phonegap</repo>
     <issue>https://github.com/pushbots/phonegap/issues</issue>
-	
+
 	<author>Abdullah Diaa</author>
-	  
+
     <license>Apache 2.0</license>
-	
+
 	<keywords>push, notifications, pushnotifications, apns, GCM, C2DM, Android push notifications, helium, APNS,Push Bots, PushBots, phonegap</keywords>
-	
+
 	<engines>
         <!-- Requires > 3.3.* because of the custom Framework tag for iOS [CB-5238] -->
         <!-- Requires > 3.5.0 because of the custom Framework tag for Android [CB-6698] -->
         <engine name="cordova" version=">=3.5.0" />
 	</engines>
-		
+
      <!-- JavaScript interface -->
      <js-module src="www/pushbots.js"
                 name="PushbotsPlugin"
                 target="www/pushbots.js">
          <clobbers target="PushbotsPlugin" />
      </js-module>
-	 
+
 	<!-- android -->
 	<platform name="android">
-		
+
         <info>
              In order to run this plugin, you need to Create application on Pushbots.
              Visit to https://pushbots.com/developer/docs/phonegap#Android
         </info>
-		
+
 		<config-file target="res/xml/config.xml" parent="/widget">
 			<feature name="PushbotsPlugin">
 				<param name="android-package" value="com.pushbots.plugin.PushbotsPlugin"/>
@@ -67,29 +67,31 @@
 			        <category android:name="$PACKAGE_NAME" />
 			    </intent-filter>
 			</receiver>
+      <receiver android:name="com.pushbots.plugin.Reciever" />
 			<receiver android:name="com.pushbots.push.DefaultPushHandler" />
 			<service android:name="com.pushbots.push.GCMIntentService" />
 		</config-file>
-		
+
 		<config-file target="AndroidManifest.xml" parent="/*/application/activity">
 			<intent-filter>
 			    <action android:name="$PACKAGE_NAME.MESSAGE" />
 			    <category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</config-file>
-		
+
 		<dependency id="android.support.v4" />
-		
+
 		<source-file src="src/android/com/pushbots/plugin/PushbotsPlugin.java" target-dir="src/com/pushbots/plugin" />
+        <source-file src="src/android/com/pushbots/plugin/Reciever.java" target-dir="src/com/pushbots/plugin" />
 
 		<source-file src="src/android/res/values/pushbots.xml" target-dir="res/values" />
-		
+
 		<source-file src="src/android/libs/pushbots-lib-2.0.13.jar" target-dir="libs/" />
 	</platform>
-	
+
     <!-- iPhone -->
    <platform name="ios">
-	   
+
 	   <config-file target="config.xml" parent="/*">
 		   <feature name="PushbotsPlugin">
 			   <param name="ios-package" value="PushbotsPlugin" />
@@ -103,17 +105,17 @@
 
        <header-file src="src/ios/PushbotsDelegate.h" />
        <source-file src="src/ios/PushbotsDelegate.m" />
-	   	   
+
        <header-file src="src/ios/PushbotsPlugin.h" />
        <source-file src="src/ios/PushbotsPlugin.m" />
-	   	   
+
 	   <framework src="CoreLocation.framework" />
 	   <framework src="SystemConfiguration.framework" />
 	   <framework src="MobileCoreServices.framework" />
 	   <framework src="CoreTelephony.framework" />
-	   
+
 	   <framework src="src/ios/libs/Pushbots.framework" custom="true" />
-  
+
    </platform>
-	
+
 </plugin>
