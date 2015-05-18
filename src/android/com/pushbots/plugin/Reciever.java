@@ -20,7 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 
-public class Reciever extends DefaultPushHandler {
+public class Receiver extends DefaultPushHandler {
 	
 	
 	private static final Object NULL = new Object() {
@@ -69,27 +69,7 @@ public class Reciever extends DefaultPushHandler {
 		}
 		return null;
 	}
-	 
-	 
-	public void onMsgRecieve(Bundle Data) {
-		try{
-			JSONObject json = new JSONObject();
-			Set<String> keys = Data.keySet();
-			for (String key : keys) {
-				try {
-					json.put(key, wrap(Data.get(key)));
-				} catch(JSONException e) {
-					//Handle exception here
-				}
-			}
-			PushbotsPlugin.sendMessage("onMsgRecieve",json);
-
-		}catch (Exception e){
-			
-		}
-		
-	}
-
+	
 	public void onMsgClick(Bundle Data) {
 		try{
 			JSONObject json = new JSONObject();

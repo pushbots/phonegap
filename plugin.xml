@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="com.pushbots.push"
-    version="1.2.4">
+    version="1.2.5">
 
 	<name>Pushbots</name>
 
@@ -67,7 +67,7 @@
 			        <category android:name="$PACKAGE_NAME" />
 			    </intent-filter>
 			</receiver>
-      <receiver android:name="com.pushbots.plugin.Reciever" />
+      <receiver android:name="com.pushbots.plugin.Receiver" />
 			<receiver android:name="com.pushbots.push.DefaultPushHandler" />
 			<service android:name="com.pushbots.push.GCMIntentService" />
 		</config-file>
@@ -82,7 +82,7 @@
 		<dependency id="android.support.v4" />
 
 		<source-file src="src/android/com/pushbots/plugin/PushbotsPlugin.java" target-dir="src/com/pushbots/plugin" />
-        <source-file src="src/android/com/pushbots/plugin/Reciever.java" target-dir="src/com/pushbots/plugin" />
+        <source-file src="src/android/com/pushbots/plugin/Receiver.java" target-dir="src/com/pushbots/plugin" />
 
 		<source-file src="src/android/res/values/pushbots.xml" target-dir="res/values" />
 

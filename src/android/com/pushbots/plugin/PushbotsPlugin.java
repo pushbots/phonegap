@@ -141,7 +141,7 @@ public class PushbotsPlugin extends CordovaPlugin {
 			pendingMessage = null;
 		}
 		Pushbots.sharedInstance().init(cordova.getActivity());
-		Pushbots.sharedInstance().setCustomHandler(Reciever.class);
+		Pushbots.sharedInstance().setCustomHandler(Receiver.class);
 		cb.success();
 	}
 	
@@ -153,7 +153,7 @@ public class PushbotsPlugin extends CordovaPlugin {
 				pendingMessage = null;
 			}
 			Pushbots.sharedInstance().init(cordova.getActivity(), args.getString(0), args.getString(1), "DEBUG");
-			Pushbots.sharedInstance().setCustomHandler(Reciever.class);
+			Pushbots.sharedInstance().setCustomHandler(Receiver.class);
 			cb.success();
 		} catch (JSONException e) {
 			cb.error("Error initializing the app.");

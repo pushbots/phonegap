@@ -54,15 +54,15 @@ PushbotsPlugin.setBadge(10);
  3. To handle Notifications payload on Click [Android only]
  
 Add this method to **index.js**
- ```
+```javascript
  function myMsgClickHandler(msg){
      console.log("Clicked On notification" + JSON.stringify(msg));
      alert(JSON.stringify(msg));
  }
-```
+ ```
 
 Then set Notification click event:
 
-```
+```javascript
 PushbotsPlugin.onNotificationClick(myMsgClickHandler);
-```
+ ```

@@ -95,16 +95,6 @@ var PushbotsPlugin = {
 			this.msgClickHandler(msgPayload);
 		}
 	},
-	onNotificationRecieve: function(handler){
-		if(handler){
-			this.msgRecieveHandler = handler;
-		}
-	},
-	onMsgRecieve: function(msgPayload){
-		if(this.msgRecieveHandler){
-			this.msgRecieveHandler(msgPayload);
-		}
-	},
 	//Success callback
 	success: function(){
 		console.log("Success");
