@@ -31,25 +31,6 @@
 	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
-
-- (void) registerOnPushbots:(CDVInvokedUrlCommand *)command
-{
-	[self.commandDelegate runInBackground:^{
-		NSLog(@"Executing registerOnPushbots(token)");
-    
-		CDVPluginResult* pluginResult = nil;
-    
-		NSString* token = [command.arguments objectAtIndex:0];
-	
-		[[Pushbots sharedInstance] registerOnPushbots:token];
-
-		pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-	}];
-	
-    
-}
-
 - (void) debug:(CDVInvokedUrlCommand *)command
 {
 	NSLog(@"Executing debug(debug)");
