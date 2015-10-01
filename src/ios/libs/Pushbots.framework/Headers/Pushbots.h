@@ -1,8 +1,8 @@
 //
 //  Pushbots.h
-//  Pushbots framework 1.1.0
+//  Pushbots framework 1.2.0
 //
-//  Created by Abdullah Diaa on 13/03/15.
+//  Created by Abdullah Diaa on 27/09/15.
 //  Copyright (c) 2015 PushBots Inc. All rights reserved.
 //
 
