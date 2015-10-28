@@ -1,96 +1,92 @@
 #import "PushbotsPlugin.h"
+#import <Cordova/CDV.h>
+#import <Pushbots/Pushbots.h>
+#import <objc/runtime.h>
+#import <objc/message.h>
 
 @implementation PushbotsPlugin
 
-- (void)initializeWithAppId:(CDVInvokedUrlCommand*)command {
-	[self.commandDelegate runInBackground:^{
-		CDVPluginResult* pluginResult = nil;
-	
-		NSString* appId = [command.arguments objectAtIndex:0];
+@synthesize callbackId;
 
+- (void) initialize:(CDVInvokedUrlCommand*)command {
+	[self.commandDelegate runInBackground:^{
+		
+		//Pushbots Application Id
+		NSString* appId = [command.arguments objectAtIndex:0];
+		
+		self.callbackId = command.callbackId;
 		dispatch_async(dispatch_get_main_queue(), ^{
+			//Ask for Push permission && create Pushbots sharedInstance
 			[Pushbots sharedInstanceWithAppId:appId];
 		});
-
-		pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+		
+		CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+		[result setKeepCallbackAsBool:YES];
+		[self.commandDelegate sendPluginResult:result callbackId:self.callbackId];
 	}];
 }
 
-- (void) setAlias:(CDVInvokedUrlCommand *)command
-{
-	NSLog(@"Executing setAlias(Alias)");
-    
-	CDVPluginResult* pluginResult = nil;
-    
-	NSString* alias = [command.arguments objectAtIndex:0];
+- (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    if (self.callbackId != nil) {
+		// Register the token on Pushbots
+	    [[Pushbots sharedInstance] registerOnPushbots:deviceToken];
 	
-	[[Pushbots sharedInstance] sendAlias:alias];
-
-	pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+		// Send the event
+	    NSString *token = [[[[deviceToken description] stringByReplacingOccurrencesOfString:@"<"withString:@""]
+	                        stringByReplacingOccurrencesOfString:@">" withString:@""]
+	                       stringByReplacingOccurrencesOfString: @" " withString: @""];
+        
+        // Send event of type "registered" with the token
+        NSMutableDictionary* responseDict = [NSMutableDictionary dictionaryWithCapacity:2];
+        [responseDict setObject:@"registered" forKey:@"type"];
+	    NSMutableDictionary* regDict = [NSMutableDictionary dictionaryWithCapacity:1];
+	    [regDict setObject:token forKey:@"deviceToken"];
+        [responseDict setObject:regDict forKey:@"data"];
+        [self sendSuccessCallback:responseDict];
+    }
 }
 
-- (void) debug:(CDVInvokedUrlCommand *)command
-{
-	NSLog(@"Executing debug(debug)");
-    
-	CDVPluginResult* pluginResult = nil;
-    
-	BOOL debug = [[command.arguments objectAtIndex:0]  isEqual:[NSNumber numberWithInt:1]];
-	
-	[[Pushbots sharedInstance] debug:debug];
-
-	pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo{
+    if (self.callbackId != nil) {
+		if ( [UIApplication sharedApplication].applicationState == UIApplicationStateActive ) {
+            // Send event of type "received" with the token
+            NSMutableDictionary* responseDict = [NSMutableDictionary dictionaryWithCapacity:2];
+            [responseDict setObject:@"received" forKey:@"type"];
+            [responseDict setObject:userInfo forKey:@"data"];
+            [self sendSuccessCallback:responseDict];
+		}
+    }
 }
 
-- (void) tag:(CDVInvokedUrlCommand *)command
-{
-	NSLog(@"Executing tag(Tag)");
-    
-	CDVPluginResult* pluginResult = nil;
-    
-	NSString* tag = [command.arguments objectAtIndex:0];
-	
-	[[Pushbots sharedInstance] tag:tag];
-
-	pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+- (void)didOpenFromRemoteNotification:(NSDictionary *)userInfo{
+    if (self.callbackId != nil) {
+        if ( [UIApplication sharedApplication].applicationState == UIApplicationStateActive ) {
+            // Send event of type "received" with the token
+            NSMutableDictionary* responseDict = [NSMutableDictionary dictionaryWithCapacity:2];
+            [responseDict setObject:@"opened" forKey:@"type"];
+            [responseDict setObject:userInfo forKey:@"data"];
+            [self sendSuccessCallback:responseDict];
+        }
+    }
 }
 
-- (void) getToken:(CDVInvokedUrlCommand *)command
-{
-	NSLog(@"Executing getToken()");
-    
-	CDVPluginResult* pluginResult = nil;
-	
-	NSString* deviceId = [[Pushbots sharedInstance] getDeviceID];
-	pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:deviceId];
-	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+- (void)sendSuccessCallback:(NSDictionary *)data {
+    if (data != nil) {
+        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:data];
+        [pluginResult setKeepCallbackAsBool:YES];
+        if (self.callbackId != nil) {
+		    [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
+        }
+    }
 }
 
-- (void) untag:(CDVInvokedUrlCommand *)command
-{
-	NSLog(@"Executing untag(Tag)");
-    
-	CDVPluginResult* pluginResult = nil;
-    
-	NSString* tag = [command.arguments objectAtIndex:0];
-	
-	[[Pushbots sharedInstance] untag:tag];
-
-	pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-}
-
-- (void) resetBadge:(CDVInvokedUrlCommand *)command
-{
+- (void) updateAlias:(CDVInvokedUrlCommand *)command {
 	[self.commandDelegate runInBackground:^{
 		CDVPluginResult* pluginResult = nil;
+		NSString* alias = [command.arguments objectAtIndex:0];
 	
 		dispatch_async(dispatch_get_main_queue(), ^{
-			[[Pushbots sharedInstance] clearBadgeCount];
+			[[Pushbots sharedInstance] sendAlias:alias];
 		});
 		
 		pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -98,8 +94,49 @@
 	}];
 }
 
-- (void) unregister:(CDVInvokedUrlCommand *)command
-{
+- (void) tag:(CDVInvokedUrlCommand *)command {
+	[self.commandDelegate runInBackground:^{
+		CDVPluginResult* pluginResult = nil;
+		NSString* tag = [command.arguments objectAtIndex:0];
+	
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[[Pushbots sharedInstance] tag:tag];
+		});
+		
+		pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+	}];
+}
+
+- (void) untag:(CDVInvokedUrlCommand *)command {
+	[self.commandDelegate runInBackground:^{
+		CDVPluginResult* pluginResult = nil;
+		NSString* tag = [command.arguments objectAtIndex:0];
+	
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[[Pushbots sharedInstance] untag:tag];
+		});
+		
+		pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+	}];
+}
+
+- (void) debug:(CDVInvokedUrlCommand *)command {
+	[self.commandDelegate runInBackground:^{
+		CDVPluginResult* pluginResult = nil;
+		BOOL debug = [[command.arguments objectAtIndex:0]  isEqual:[NSNumber numberWithInt:1]];
+	
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[[Pushbots sharedInstance] debug:debug];
+		});
+		
+		pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+	}];
+}
+
+- (void) unregister:(CDVInvokedUrlCommand *)command {
 	[self.commandDelegate runInBackground:^{
 		CDVPluginResult* pluginResult = nil;
 	
@@ -112,20 +149,102 @@
 	}];
 }
 
-
-- (void) setBadge:(CDVInvokedUrlCommand *)command
-{
-	NSLog(@"Executing setBadge(count)");
-    
+- (void) getRegistrationId:(CDVInvokedUrlCommand *)command {
 	CDVPluginResult* pluginResult = nil;
-    
-	NSString* count = [command.arguments objectAtIndex:0];
-	int badge = [count intValue];
-	
-	[[Pushbots sharedInstance] setBadge:badge];
-
-	pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+	NSString* deviceId = [[Pushbots sharedInstance] getDeviceID];
+	pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:deviceId];
 	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void) clearBadgeCount:(CDVInvokedUrlCommand *)command {
+	[self.commandDelegate runInBackground:^{
+		CDVPluginResult* pluginResult = nil;
+	
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[[Pushbots sharedInstance] clearBadgeCount];
+		});
+		
+		pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+	}];
+}
+
+- (void) setBadge:(CDVInvokedUrlCommand *)command {
+	[self.commandDelegate runInBackground:^{
+		CDVPluginResult* pluginResult = nil;
+		NSString* count = [command.arguments objectAtIndex:0];
+		int badge = [count intValue];
+		
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[[Pushbots sharedInstance] setBadge:badge];
+		});
+		
+		pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+	}];
+}
+
+@end
+
+@implementation AppDelegate (PushbotsPlugin)
+
+void MethodSwizzle(Class c, SEL originalSelector) {
+	NSString *original = NSStringFromSelector(originalSelector);
+    
+	SEL swizzledSelector = NSSelectorFromString([@"swizzled_" stringByAppendingString:original]);
+	SEL noopSelector = NSSelectorFromString([@"noop_" stringByAppendingString:original]);
+    
+	Method originalMethod, swizzledMethod, noop;
+	originalMethod = class_getInstanceMethod(c, originalSelector);
+	swizzledMethod = class_getInstanceMethod(c, swizzledSelector);
+	noop = class_getInstanceMethod(c, noopSelector);
+    
+	BOOL didAddMethod = class_addMethod(c,
+	originalSelector,
+	method_getImplementation(swizzledMethod),
+	method_getTypeEncoding(swizzledMethod));
+    
+	if (didAddMethod)
+	{
+		class_replaceMethod(c,
+		swizzledSelector,
+		method_getImplementation(noop),
+		method_getTypeEncoding(originalMethod));
+	}
+	else
+	{
+
+		method_exchangeImplementations(originalMethod, swizzledMethod);
+
+	}
+}
+
+- (id) getCommandInstance:(NSString*)className{
+    return [self.viewController getCommandInstance:className];
+}
+
++ (void)load {
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+	    MethodSwizzle([self class], @selector(application:didRegisterForRemoteNotificationsWithDeviceToken:));
+	    MethodSwizzle([self class], @selector(application:didReceiveRemoteNotification:));
+	});
+}
+
+- (void)noop_application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+}
+
+- (void)noop_application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+}
+
+- (void)swizzled_application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    PushbotsPlugin *pushHandler = [self getCommandInstance:@"PushbotsPlugin"];
+    [pushHandler didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+}
+
+- (void)swizzled_application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+	PushbotsPlugin *pushHandler = [self getCommandInstance:@"PushbotsPlugin"];
+	[pushHandler didReceiveRemoteNotification:userInfo];
 }
 
 @end
