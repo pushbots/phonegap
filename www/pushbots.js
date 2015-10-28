@@ -1,109 +1,183 @@
-var PushbotsPlugin = {
+"use strict";
 
-	// Register the device with Pushbots and ask for push permission
-    initialize: function(appId) {
-		appId = typeof appId !== 'undefined' ? appId : null;
-		cordova.exec( this.success, this.fail, 'PushbotsPlugin', 'initializeWithAppId', [appId] );
-    },
+/**
+ * Provide communication between the Cordova JavaScript and the native environment. 
+ * 
+ * @param {exec~successCallback} successFunction - Success function callback. Assuming your exec() call completes successfully, this function is invoked.
+ * @param {exec~failCallback} failFunction - Error function callback. If the operation doesn't complete successfully, this function is invoked.
+ * @param {string} service - The name of the service to call into on the native side. This is mapped to a native class.
+ * @param {string} action - The name of the action to call into. This is picked up by the native class receiving the cordova.exec() call, and essentially maps to a class's method.
+ * @param {args} Arguments to pass into the native environment.
+ */
+var exec = require("cordova/exec");
+
+/**
+ * The Cordova plugin title.
+ */
+var SERVICE_TITLE = "PushbotsPlugin";
 
 
-    initializeAndroid: function(appId, sender_id) {
-		if(this.isAndroid()){
-			cordova.exec( this.success, this.fail, 'PushbotsPlugin', 'initializeWithAppIdAndSenderId', [appId, sender_id] );
-		}
-    },
-
-    initializeiOS: function(appId) {
-		if(this.isiOS()){
-			cordova.exec( this.success, this.fail, 'PushbotsPlugin', 'initializeWithAppId', [appId] );
-		}
-    },
-
-	//Check for iOS platform
-	isiOS : function () {
-		return /iPhone|iPad|iPod/.test(navigator.userAgent);
-	},
-
-	//Check for Android platform
-	isAndroid : function () {
-	    return ( navigator.userAgent.indexOf("Android") > 0 );
-	},
-
-	//Register device on Pushbots [iOS only]
-    registerOnPushbots: function(token) {
-		if(this.isiOS()){
-       	 	cordova.exec( this.success, this.fail, 'PushbotsPlugin', 'registerOnPushbots', [token] );
-		}
-    },
+/**
+* Initialize Pushbots Plugin.
+* Returns an instance of the PushbotsPlugin class
+*
+* @param {string} app_id - Pushbots Application ID
+* @param {Object} options - platform-specific options
+* @see {@link https://pushbots.com/../../#Options}
+*/
+var PushbotsPlugin = function(app_id, options) {
 	
-	//Unregister device
-    unregister: function() {
-        cordova.exec( this.success, this.fail, 'PushbotsPlugin', 'unregister', [] );
-    },
+	this._events = {};
 	
-	//Update device Alias
-    setAlias: function(alias) {
-        cordova.exec( this.success, this.fail, 'PushbotsPlugin', 'setAlias', [alias] );
-    },
+	/* VALIDATE APP_ID */
+	// Pushbots Application ID is required
+	if (typeof app_id === 'undefined') {
+		console.error('app_id argument is required.');
+	}
 
-	// Tag device
-    tag: function(tag) {
-        cordova.exec( this.success, this.fail, 'PushbotsPlugin', 'tag', [tag] );
-    },
+	var checkForAppId = new RegExp("^[0-9a-fA-F]{24}$");
+	if (!checkForAppId.test(app_id)) {
+		console.error('app_id argument is not valid.');
+	}
 
-	//untag device
-    untag: function(untag) {
-        cordova.exec( this.success, this.fail, 'PushbotsPlugin', 'untag', [untag] );
-    },
-
-	// Set as debugging device
-    debug: function(debug) {
-        cordova.exec( this.success, this.fail, 'PushbotsPlugin', 'debug', [debug] );
-    },
-
-	//Get device token
-    getToken: function(success) {
-        cordova.exec( success, this.fail, 'PushbotsPlugin', 'getToken', [] );
-    },
+	this.app_id = app_id;
 	
-	//Reset Badge [iOS only]
-    resetBadge: function() {
-        cordova.exec( this.success, this.fail, 'PushbotsPlugin', 'resetBadge', [] );
-    },
-
-	//Set badge [iOS only]
-    setBadge: function(count) {
-        cordova.exec( this.success, this.fail, 'PushbotsPlugin', 'setBadge', [count] );
-    },
-
-
-	//Handle received Notification
-	receivedNotification: function(){
-        // fire off deviceready
-        var e = document.createEvent('Events');
-        e.initEvent('received-notification');
-        document.dispatchEvent(e);
-	},
-	//handle click notification
-	onNotificationClick: function(handler){
-		if(handler){
-			this.msgClickHandler = handler;
+	/* VALIDATE PLATFORM-SPECIFIC OPTIONS*/
+	// iOS:
+	// Android:
+	this.options = options;
+	
+	var that = this;
+	var success = function(data){
+		if (data && typeof data.type !== 'undefined') {
+			//Registration event
+			if(data.type === "registered"){
+				that.fire("registered", data.data.deviceToken);
+			// Received Notification
+			}else if(data.type === "received"){
+				that.fire("notification", data.data);
+			// Opened Notification
+			}else if(data.type === "opened"){
+				that.fire("notificationClicked", data.data);
+			}
+		}else{
+			console.log(data);
 		}
-	},
-	onMsgClick: function(msgPayload){
-		if(this.msgClickHandler){
-			this.msgClickHandler(msgPayload);
-		}
-	},
-	//Success callback
-	success: function(){
-		console.log("Success");
-	},
+	};
+	
+	var fail = function(error){
+		console.error(error);
+	};
+	
+	exec(success, fail, SERVICE_TITLE, 'initialize', [this.app_id, this.options]);
+	
+};
 
-	//Failure callback
-	fail: function(error){
-		console.log("Error", error);
+/**
+* Watch events and store its callback
+*
+* @param {string} eventName
+* @param {callback} callback
+*/
+PushbotsPlugin.prototype.on = function (eventName, callback) {
+	
+	if (typeof callback !== 'function')
+		return;
+	
+	if (! this._events.hasOwnProperty(eventName)) {
+		this._events[eventName] = [];
+	}
+	this._events[eventName].push(callback);
+	
+};
+
+/**
+* Execute events
+*
+* @param {string} eventName
+* @param {Object} data - data to handle on event execution
+*/
+PushbotsPlugin.prototype.fire = function (eventName, data) {
+	if (this._events.hasOwnProperty(eventName)) {
+		var cbs = this._events[eventName];
+		for (var i = 0, len = cbs.length; i < len; i++) {
+			if(data){
+				cbs[i](data);
+			}
+		}
 	}
 };
 
-module.exports = PushbotsPlugin;
+
+/**** Pushbots Method ****/
+
+/**
+* Update Alias of the device on Pushbots
+*
+* @param {string} alias
+*/
+PushbotsPlugin.prototype.updateAlias = function(alias){
+	exec(this.success, this.fail, SERVICE_TITLE, 'updateAlias', [alias]);
+};
+
+/**
+* Add tag to the device on Pushbots
+*
+* @param {string} tag
+*/
+PushbotsPlugin.prototype.tag = function(tag){
+	exec(this.success, this.fail, SERVICE_TITLE, 'tag', [tag]);
+};
+
+/**
+* Remove tag from the device on Pushbots
+*
+* @param {string} tag
+*/
+PushbotsPlugin.prototype.untag = function(tag){
+	exec(this.success, this.fail, SERVICE_TITLE, 'untag', [tag]);
+};
+
+/**
+* Set debug flag for the device for Sandbox
+*
+* @param {boolean} debug
+*/
+PushbotsPlugin.prototype.debug = function(debug){
+	exec(this.success, this.fail, SERVICE_TITLE, 'debug', [debug]);
+};
+
+/**
+* Retrieve Stored Device token
+*
+* @param {callback} success
+*/
+PushbotsPlugin.prototype.getRegistrationId = function(success){
+	exec(success, this.fail, SERVICE_TITLE, 'getRegistrationId', []);
+};
+
+/**
+* Unregister the device from Pushbots servers.
+*
+* @param {callback} success
+*/
+PushbotsPlugin.prototype.unregister = function(){
+	exec(this.success, this.fail, SERVICE_TITLE, 'unregister', []);
+};
+
+module.exports = {
+	/**
+	* Initialize Pushbots Plugin.
+	* Returns an instance of the PushbotsPlugin class
+	*
+	* @param {string} app_id - Pushbots Application ID
+	* @param {Object} options - platform-specific options
+	* @return {PushbotsPlugin} instance
+	* @see {@link https://pushbots.com/../../#Options}
+	*/
+	initialize: function(app_id, options) {
+		return new PushbotsPlugin(app_id, options);
+	},
+	
+	PushbotsPlugin: PushbotsPlugin
+};
