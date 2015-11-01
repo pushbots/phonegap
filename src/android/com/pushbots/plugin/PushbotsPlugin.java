@@ -1,6 +1,5 @@
 package com.pushbots.plugin;
 
-import com.pushbots.logapp.MainActivity;
 import com.pushbots.push.Pushbots;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
