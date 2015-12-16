@@ -1,8 +1,8 @@
 //
 //  Pushbots.h
-//  Pushbots framework 1.2.0
+//  Pushbots framework 1.2.2
 //
-//  Created by Abdullah Diaa on 27/09/15.
+//  Created by Abdullah Diaa on 14/12/15.
 //  Copyright (c) 2015 PushBots Inc. All rights reserved.
 //
 
@@ -208,6 +208,15 @@
  Record opened notification on Pushbots servers.
  */
 -(void) OpenedNotification;
+
+/*!
+ @method
+ 
+ @abstract
+ Record opened notification on Pushbots servers.
+ */
+-(void) trackPushNotificationOpenedWithLaunchOptions:(NSDictionary *) launchOptions;
+-(void) trackPushNotificationOpenedWithPayload:(NSDictionary *) payload;
 
 
 /*! @deprecated Get Application ID and pushOptions from pushbots.xml <=1.0.5.5 */
