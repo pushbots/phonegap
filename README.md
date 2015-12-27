@@ -1,68 +1,61 @@
-# phonegap
-PushBots' official module for Phonegap
+# phonegap/Cordova Plugin for Pushbots
+
+> PushBots' official module for Phonegap/Cordova
 
 https://pushbots.com/developer/docs/phonegap
 
-##Installation
+## Installation
+
+This requires phonegap/cordova CLI 5.0+
+
 ```bash
-cordova plugin add com.pushbots.push
+cordova plugin add pushbots-cordova-plugin
 ```
 
 ##Usage
+
 1. Intialize Pushbots in deviceReady section:
 ```javascript
-onDeviceReady: function() {
-	app.receivedEvent('deviceready');
+var Pushbots = PushbotsPlugin.initialize("PUSHBOTS_APPLICATIONID", {"android":{"sender_id":"SENDER_ID"}});
 
-	if( PushbotsPlugin.isiOS() ){
-		PushbotsPlugin.initializeiOS("PUSHBOTS_APP_ID");
-	}
-	
-	if( PushbotsPlugin.isAndroid() ){
-		PushbotsPlugin.initializeAndroid("PUSHBOTS_APP_ID", "GCM_SENDER_ID");
-	}
-}
+// First time registration
+// This will be called on token registration/refresh with Android and with every runtime with iOS
+Pushbots.on("registered", function(token){
+	console.log("Registration Id:" + token);
+});
+
+Pushbots.getRegistrationId(function(token){
+	console.log("Registration Id:" + token);
+});
 ```
 
 
 2. Methods to use it:
 ```javascript
-//iOS && Android
-//Set Alias
-PushbotsPlugin.setAlias("alias");
-//Tag Device
-PushbotsPlugin.tag("tag");
-//unTag device
-PushbotsPlugin.untag("tag1");
-//Enable debug mode
-PushbotsPlugin.debug(true);
-//Unregister device from Pushbots
-PushbotsPlugin.unregister();
-//Get device token
-PushbotsPlugin.getToken(function(token){
-	console.log(token);
-});
+
+Pushbots.updateAlias("Test");
+Pushbots.tag("tag1");
+Pushbots.untag("tag1");
+Pushbots.debug(true);
+Pushbots.unregister();
 
 //iOS only
+
 //Reset Badge
-PushbotsPlugin.resetBadge();
+Pushbots.resetBadge();
 //Set badge
-PushbotsPlugin.setBadge(10);
+Pushbots.setBadge(10);
  ```
  
  
- 3. To handle Notifications payload on Click [Android only]
- 
-Add this method to **index.js**
-```javascript
- function myMsgClickHandler(msg){
-     console.log("Clicked On notification" + JSON.stringify(msg));
-     alert(JSON.stringify(msg));
- }
- ```
-
-Then set Notification click event:
+ 3. To handle Notification events:
 
 ```javascript
-PushbotsPlugin.onNotificationClick(myMsgClickHandler);
+Pushbots.on("notification", function(data){
+	console.log("Received: " + data);
+});
+
+Pushbots.on("notificationClicked", function(data){
+	console.log("Clicked: " + data);
+});
  ```
