@@ -55,10 +55,10 @@ var PushbotsPlugin = function(app_id, options) {
 				that.fire("registered", data.data.deviceToken);
 			// Received Notification
 			}else if(data.type === "received"){
-				that.fire("notification", data.data);
+				that.fire("notification:received", data.data);
 			// Opened Notification
 			}else if(data.type === "opened"){
-				that.fire("notificationClicked", data.data);
+				that.fire("notification:clicked", data.data);
 			}
 		}else{
 			console.log(data);
@@ -68,9 +68,8 @@ var PushbotsPlugin = function(app_id, options) {
 	var fail = function(error){
 		console.error(error);
 	};
-	
+    //Intialize Pushbots
 	exec(success, fail, SERVICE_TITLE, 'initialize', [this.app_id, this.options]);
-	
 };
 
 /**
