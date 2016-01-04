@@ -51,11 +51,14 @@ Pushbots.setBadge(10);
  3. To handle Notification events:
 
 ```javascript
-Pushbots.on("notification", function(data){
-	console.log("Received: " + data);
+// Should be called once app receive the notification
+Pushbots.on("notification:received", function(data){
+	console.log("received:" + JSON.stringify(data));
 });
 
-Pushbots.on("notificationClicked", function(data){
-	console.log("Clicked: " + data);
+// Should be called once the notification is clicked
+// **important** Doesn't work with iOS while app is closed, will be fixed in 1.3.1
+Pushbots.on("notification:clicked", function(data){
+	console.log("clicked:" + JSON.stringify(data));
 });
  ```
