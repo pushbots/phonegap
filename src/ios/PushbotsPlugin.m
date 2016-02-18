@@ -199,77 +199,35 @@ static char launchNotificationKey;
 
 @implementation AppDelegate (PushbotsPlugin)
 
-void MethodSwizzle(Class c, SEL originalSelector) {
-	NSString *original = NSStringFromSelector(originalSelector);
-    
-	SEL swizzledSelector = NSSelectorFromString([@"swizzled_" stringByAppendingString:original]);
-	SEL noopSelector = NSSelectorFromString([@"noop_" stringByAppendingString:original]);
-    
-	Method originalMethod, swizzledMethod, noop;
-	originalMethod = class_getInstanceMethod(c, originalSelector);
-	swizzledMethod = class_getInstanceMethod(c, swizzledSelector);
-	noop = class_getInstanceMethod(c, noopSelector);
-    
-	BOOL didAddMethod = class_addMethod(c,
-	originalSelector,
-	method_getImplementation(swizzledMethod),
-	method_getTypeEncoding(swizzledMethod));
-    
-	if (didAddMethod)
-	{
-		class_replaceMethod(c,
-		swizzledSelector,
-		method_getImplementation(noop),
-		method_getTypeEncoding(originalMethod));
-	}
-	else
-	{
-		method_exchangeImplementations(originalMethod, swizzledMethod);
-	}
-    
-}
-
 - (id) getCommandInstance:(NSString*)className{
     return [self.viewController getCommandInstance:className];
 }
 
 + (void)load {
-	static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-        MethodSwizzle([self class], @selector(init));
-	    MethodSwizzle([self class], @selector(application:didRegisterForRemoteNotificationsWithDeviceToken:));
-	    MethodSwizzle([self class], @selector(application:didReceiveRemoteNotification:));
-        MethodSwizzle([self class], @selector(applicationDidBecomeActive:));
-    });
+    Method original, swizzled;
+    
+    original = class_getInstanceMethod(self, @selector(init));
+    swizzled = class_getInstanceMethod(self, @selector(swizzled_init));
+    method_exchangeImplementations(original, swizzled);
 }
 
 - (AppDelegate *)swizzled_init
-{    
-    // This actually calls the original init method over in AppDelegate. Equivilent to calling super
-    // on an overrided method, this is not recursive, although it appears that way. neat huh?
+{
     return [self swizzled_init];
 }
 
-- (void)noop_application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-}
-- (void)swizzled_application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     PushbotsPlugin *pushHandler = [self getCommandInstance:@"PushbotsPlugin"];
     [pushHandler didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }
 
-
-- (void)noop_application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-}
-- (void)swizzled_application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
 	PushbotsPlugin *pushHandler = [self getCommandInstance:@"PushbotsPlugin"];
     [pushHandler didReceiveRemoteNotification:userInfo];
 }
 
-- (void)noop_applicationDidBecomeActive:(UIApplication *)application {
-}
-
-- (void)swizzled_applicationDidBecomeActive:(UIApplication *)application {
-     NSLog(@"applicationDidBecomeActive");
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    NSLog(@"applicationDidBecomeActive");
      if (self.launchNotification) {
         PushbotsPlugin *pushHandler = [self getCommandInstance:@"PushbotsPlugin"];
         pushHandler.notificationPayload = self.launchNotification;
