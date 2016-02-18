@@ -57,7 +57,6 @@ Pushbots.on("notification:received", function(data){
 });
 
 // Should be called once the notification is clicked
-// **important** Doesn't work with iOS while app is closed, will be fixed in 1.3.1
 Pushbots.on("notification:clicked", function(data){
 	console.log("clicked:" + JSON.stringify(data));
 });
