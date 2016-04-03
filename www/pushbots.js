@@ -16,6 +16,8 @@ var exec = require("cordova/exec");
  */
 var SERVICE_TITLE = "PushbotsPlugin";
 
+var PushbotsPlugin = function() {};
+
 
 /**
 * Initialize Pushbots Plugin.
@@ -25,7 +27,7 @@ var SERVICE_TITLE = "PushbotsPlugin";
 * @param {Object} options - platform-specific options
 * @see {@link https://pushbots.com/../../#Options}
 */
-var PushbotsPlugin = function(app_id, options) {
+PushbotsPlugin.prototype.initialize = function(app_id, options) {
 	
 	this._events = {};
 	
@@ -183,19 +185,20 @@ PushbotsPlugin.prototype.unregister = function(){
 	exec(this.success, this.fail, SERVICE_TITLE, 'unregister', []);
 };
 
-module.exports = {
-	/**
-	* Initialize Pushbots Plugin.
-	* Returns an instance of the PushbotsPlugin class
-	*
-	* @param {string} app_id - Pushbots Application ID
-	* @param {Object} options - platform-specific options
-	* @return {PushbotsPlugin} instance
-	* @see {@link https://pushbots.com/../../#Options}
-	*/
-	initialize: function(app_id, options) {
-		return new PushbotsPlugin(app_id, options);
-	},
-	
-	PushbotsPlugin: PushbotsPlugin
-};
+if(!window.plugins)
+    window.plugins = {};
+
+/**
+* Initialize Pushbots Plugin.
+* Returns an instance of the PushbotsPlugin class
+*
+* @param {string} app_id - Pushbots Application ID
+* @param {Object} options - platform-specific options
+* @return {PushbotsPlugin} instance
+* @see {@link https://pushbots.com/../../#Options}
+*/
+if (!window.plugins.PushbotsPlugin){
+    window.plugins.PushbotsPlugin = new PushbotsPlugin();
+}
+
+module.exports = PushbotsPlugin;
