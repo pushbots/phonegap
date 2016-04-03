@@ -203,17 +203,59 @@ static char launchNotificationKey;
     return [self.viewController getCommandInstance:className];
 }
 
-+ (void)load {
-    Method original, swizzled;
-    
-    original = class_getInstanceMethod(self, @selector(init));
-    swizzled = class_getInstanceMethod(self, @selector(swizzled_init));
-    method_exchangeImplementations(original, swizzled);
++ (void)load
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Class class = [self class];
+        
+        SEL originalSelector = @selector(init);
+        SEL swizzledSelector = @selector(swizzled_init);
+        
+        Method original = class_getInstanceMethod(class, originalSelector);
+        Method swizzled = class_getInstanceMethod(class, swizzledSelector);
+        
+        BOOL didAddMethod =
+        class_addMethod(class,
+                        originalSelector,
+                        method_getImplementation(swizzled),
+                        method_getTypeEncoding(swizzled));
+        
+        if (didAddMethod) {
+            class_replaceMethod(class,
+                                swizzledSelector,
+                                method_getImplementation(original),
+                                method_getTypeEncoding(original));
+        } else {
+            method_exchangeImplementations(original, swizzled);
+        }
+    });
 }
+
 
 - (AppDelegate *)swizzled_init
 {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(createNotificationObserverOnLaunching:)
+                                                 name:UIApplicationDidFinishLaunchingNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self
+                                            selector:@selector(applicationDidBecomeActive:)
+                                                name:UIApplicationDidBecomeActiveNotification
+                                              object:nil];
     return [self swizzled_init];
+}
+
+- (void)createNotificationObserverOnLaunching:(NSNotification *)notification
+{
+    if (notification)
+    {
+        NSDictionary *launchOptions = [notification userInfo];
+        if (launchOptions) {
+            self.launchNotification = [launchOptions objectForKey: @"UIApplicationLaunchOptionsRemoteNotificationKey"];
+        }
+    }
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
@@ -226,15 +268,17 @@ static char launchNotificationKey;
     [pushHandler didReceiveRemoteNotification:userInfo];
 }
 
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-    NSLog(@"applicationDidBecomeActive");
-     if (self.launchNotification) {
-        PushbotsPlugin *pushHandler = [self getCommandInstance:@"PushbotsPlugin"];
+- (void)applicationDidBecomeActive:(NSNotification *)notification {
+    
+    NSLog(@"active");
+    
+    PushbotsPlugin *pushHandler = [self getCommandInstance:@"PushbotsPlugin"];
+
+    if (self.launchNotification) {
         pushHandler.notificationPayload = self.launchNotification;
-         [pushHandler notificationPayload];
-         self.launchNotification = nil;
+        self.launchNotification = nil;
         [pushHandler performSelectorOnMainThread:@selector(notificationOpened) withObject:pushHandler waitUntilDone:NO];
-     }
+    }
 }
 
 // The accessors use an Associative Reference since you can't define a iVar in a category
