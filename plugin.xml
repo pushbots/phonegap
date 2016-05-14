@@ -77,7 +77,7 @@
 			</intent-filter>
 		</config-file>
 
-		<dependency id="cordova-plugin-android-support-v4" />
+		<framework src="com.google.android.gms:play-services-gcm:+" />
 
 		<source-file src="src/android/com/pushbots/plugin/PushbotsPlugin.java" target-dir="src/com/pushbots/plugin" />
         <source-file src="src/android/com/pushbots/plugin/PushHandler.java" target-dir="src/com/pushbots/plugin" />
