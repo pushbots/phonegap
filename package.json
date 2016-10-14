@@ -1,6 +1,6 @@
 {
   "name": "pushbots-cordova-plugin",
-  "version": "1.3.9",
+  "version": "1.4.0",
   "description": "PushBots plugin for phonegap/Cordova.",
   "cordova": {
     "id": "pushbots-cordova-plugin",
@@ -17,7 +17,7 @@
     "push",
     "notifications",
     "pushnotifications",
-    "apns",
+    "free push notifications",
     "GCM",
     "C2DM",
     "Android push notifications",
@@ -33,7 +33,23 @@
   "engines": [
     {
       "name": "cordova",
-      "version": ">=3.5.0"
+      "version": ">=3.6.3"
+    },
+    {
+      "name": "cordova-android",
+      "version": ">=4.0.0"
+    },
+    {
+      "name": "cordova-ios",
+      "version": ">=4.1.0"
+    },
+    {
+      "name": "apple-ios",
+      "version": ">=7.0.0"
+    },
+    {
+      "name": "apple-xcode",
+      "version": ">=7.0.0"
     }
   ],
   "author": "Pushbots",

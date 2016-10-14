@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="pushbots-cordova-plugin"
-    version="1.3.9">
+    version="1.4.0">
 
 	<name>Pushbots</name>
 
@@ -15,11 +15,16 @@
 
     <license>Apache 2.0</license>
 
-	<keywords>push, notifications, pushnotifications, apns, GCM, C2DM, Android push notifications, helium, APNS,Push Bots, PushBots, phonegap</keywords>
+	<keywords>push, notifications, pushnotifications, apns, GCM, C2DM, Android push notifications,Push Bots, PushBots, phonegap</keywords>
 
 	<engines>
-        <engine name="cordova" version=">=3.5.0" />
+		<engine name="cordova" version=">=3.6.3"/>
+		<engine name="cordova-android" version=">=4.0.0"/>
+		<engine name="cordova-ios" version=">=4.1.0"/>
+		<engine name="apple-ios" version=">=7.0.0" />
+		<engine name="apple-xcode" version=">=7.0.0" />
 	</engines>
+  
 
      <!-- JavaScript interface -->
      <js-module src="www/pushbots.js"
