@@ -265,9 +265,33 @@ static char launchNotificationKey;
     [pushHandler didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }
 
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-	PushbotsPlugin *pushHandler = [self getCommandInstance:@"PushbotsPlugin"];
-    [pushHandler didReceiveRemoteNotification:userInfo];
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:( void (^)(UIBackgroundFetchResult))completionHandler;{
+	if (application.applicationState == UIApplicationStateActive) {
+		PushbotsPlugin *pushHandler = [self getCommandInstance:@"PushbotsPlugin"];
+		[pushHandler didReceiveRemoteNotification:userInfo];
+		completionHandler(UIBackgroundFetchResultNewData);
+	}else{
+		long silent = 0;
+		id not_aps = [userInfo objectForKey:@"aps"];
+		id contentAvailable = [not_aps objectForKey:@"content-available"];
+		
+		if ([contentAvailable isKindOfClass:[NSString class]] && [contentAvailable isEqualToString:@"1"]) {
+			silent = 1;
+		}
+		
+		if (silent == 1) {
+			NSLog(@"Silent notification detected!");
+			void (^safeHandler)(UIBackgroundFetchResult) = ^(UIBackgroundFetchResult result){
+				dispatch_async(dispatch_get_main_queue(), ^{
+					completionHandler(result);
+				});
+			};
+			PushbotsPlugin *pushHandler = [self getCommandInstance:@"PushbotsPlugin"];
+			[pushHandler didReceiveRemoteNotification:userInfo];
+		}else {
+			completionHandler(UIBackgroundFetchResultNewData);
+		}
+	}
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)notification {
