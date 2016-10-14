@@ -337,6 +337,9 @@ static char launchNotificationKey;
             
 			[pushHandler didReceiveRemoteNotification:userInfo];
 		}else {
+            PushbotsPlugin *pushHandler = [self getCommandInstance:@"PushbotsPlugin"];
+            pushHandler.notificationPayload = userInfo;
+            [pushHandler notificationOpened];
 			completionHandler(UIBackgroundFetchResultNewData);
 		}
 	}
