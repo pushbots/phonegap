@@ -149,7 +149,7 @@ static char launchNotificationKey;
 - (void) unregister:(CDVInvokedUrlCommand *)command {
 	[self.commandDelegate runInBackground:^{
 		CDVPluginResult* pluginResult = nil;
-	
+		//Unsubscribe the user
 		dispatch_async(dispatch_get_main_queue(), ^{
 			[self.PushbotsClient toggleNotifications:false];			
 		});
@@ -160,15 +160,18 @@ static char launchNotificationKey;
 }
 
 - (void) getRegistrationId:(CDVInvokedUrlCommand *)command {
+	CDVPluginResult* pluginResult = nil;
 	
-	[self.PushbotsClient getDevice:^(NSDictionary *device, NSError *error) {
-		CDVPluginResult* pluginResult = nil;
-		//Log device tags
-		NSString* deviceId = [device objectForKey:@"token"];
-		pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:deviceId];
-		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-	}];
+	//Retrieve token from NSUserDefaults "com.pushbots.api.deviceID"
+	NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"com.pushbots.api.deviceID"];
+	
+	if (!token || [token isEqualToString:@""])
+		return;
+	
+	pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:token];
+	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
+
 
 - (void) clearBadgeCount:(CDVInvokedUrlCommand *)command {
 	[self.commandDelegate runInBackground:^{
