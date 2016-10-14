@@ -6,11 +6,14 @@
 #import <Cordova/CDV.h>
 #import <Pushbots/Pushbots.h>
 
-@interface PushbotsPlugin : CDVPlugin
+@interface PushbotsPlugin : CDVPlugin{
+	 void (^completionHandler)(UIBackgroundFetchResult);
+}
 
 @property NSString *callbackId;
 @property (nonatomic, strong) NSDictionary *notificationPayload;
 @property (strong, nonatomic) Pushbots *PushbotsClient;
+@property (nonatomic, strong) NSMutableDictionary *silentHandler;
 
 - (void) initialize:(CDVInvokedUrlCommand*)command;
 

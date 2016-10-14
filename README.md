@@ -54,6 +54,10 @@ window.plugins.PushbotsPlugin.setBadge(10);
 // Should be called once app receive the notification
 window.plugins.PushbotsPlugin.on("notification:received", function(data){
 	console.log("received:" + JSON.stringify(data));
+	
+	//Silent notifications Only [iOS only]
+	//Send CompletionHandler signal with PushBots notification Id
+	window.plugins.PushbotsPlugin.done(data.pb_n_id);
 });
 
 // Should be called once the notification is clicked

@@ -150,6 +150,19 @@ PushbotsPlugin.prototype.setBadge = function(badge){
 };
 
 /**
+* [iOS Only]
+* Silent notifications Support
+* CompletionHandler for Silent iOS notifications
+*
+*/
+PushbotsPlugin.prototype.done = function(notification_id, success, fail){
+	if (!success) { success = function() {}; }
+	if (!fail) { fail = function() {}; }
+	
+	exec(undefined, undefined, SERVICE_TITLE, 'done', [notification_id]);
+};
+
+/**
 * Remove tag from the device on Pushbots
 *
 * @param {string} tag

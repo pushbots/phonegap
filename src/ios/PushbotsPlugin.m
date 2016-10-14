@@ -8,6 +8,7 @@ static char launchNotificationKey;
 @implementation PushbotsPlugin
 
 @synthesize notificationPayload;
+@synthesize silentHandler;
 @synthesize callbackId;
 
 - (void) initialize:(CDVInvokedUrlCommand*)command {
@@ -54,16 +55,16 @@ static char launchNotificationKey;
 
 - (void)didReceiveRemoteNotification:(NSDictionary *)userInfo{
     if (self.callbackId != nil) {
-		if ( [UIApplication sharedApplication].applicationState == UIApplicationStateActive ) {
-            // Send event of type "received" with the token
-            NSMutableDictionary* responseDict = [NSMutableDictionary dictionaryWithCapacity:2];
-            [responseDict setObject:@"received" forKey:@"type"];
-            [responseDict setObject:userInfo forKey:@"data"];
-            [self sendSuccessCallback:responseDict];
-        }else{
+		if ( [UIApplication sharedApplication].applicationState != UIApplicationStateActive ) {
             self.notificationPayload = userInfo;
-            [self notificationOpened];
         }
+        
+        // Send event of type "received" with the token
+        NSMutableDictionary* responseDict = [NSMutableDictionary dictionaryWithCapacity:2];
+        [responseDict setObject:@"received" forKey:@"type"];
+        [responseDict setObject:userInfo forKey:@"data"];
+        [self sendSuccessCallback:responseDict];
+
     }
 }
 
@@ -201,6 +202,44 @@ static char launchNotificationKey;
 	}];
 }
 
+//Call this function to set the completion handler of silent notifications
+-(void) done:(CDVInvokedUrlCommand*)command
+{
+    [self.commandDelegate runInBackground:^ {
+		//PushBots notificationId in payload, it has the key "pb_n_id"
+        NSString* notification_id = [command.arguments objectAtIndex:0];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+
+			//Setting Interval of 0.1 seconds to call the completionHandler with PushBots notification Id
+            [NSTimer scheduledTimerWithTimeInterval:0.1
+                                             target:self
+                                           selector:@selector(silentCompletionHandler:)
+                                           userInfo:notification_id
+                                            repeats:NO];
+        });
+		
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
+//Send CompletionHandler Signal
+-(void)silentCompletionHandler:(NSTimer*)timer
+{
+
+    if (silentHandler) {
+         UIApplication *application = [UIApplication sharedApplication];
+		//Let's get the completionHandler from silentHandler Dict
+        completionHandler = [silentHandler[[timer userInfo]] copy];
+        if (completionHandler) {
+            NSLog(@"Background time remaining: %f seconds (%d mins)", [application backgroundTimeRemaining], (int)([application backgroundTimeRemaining] / 60));
+            completionHandler(UIBackgroundFetchResultNewData);
+            completionHandler = nil;
+        }
+    }
+}
+
 @end
 
 @implementation AppDelegate (PushbotsPlugin)
@@ -271,22 +310,31 @@ static char launchNotificationKey;
 		[pushHandler didReceiveRemoteNotification:userInfo];
 		completionHandler(UIBackgroundFetchResultNewData);
 	}else{
-		long silent = 0;
-		id not_aps = [userInfo objectForKey:@"aps"];
+
+        id not_aps = [userInfo objectForKey:@"aps"];
 		id contentAvailable = [not_aps objectForKey:@"content-available"];
-		
-		if ([contentAvailable isKindOfClass:[NSString class]] && [contentAvailable isEqualToString:@"1"]) {
-			silent = 1;
-		}
-		
-		if (silent == 1) {
+        
+		//Check for contentAvailable to know if the notification should be handled in background
+		if ([contentAvailable intValue] == 1) {
 			NSLog(@"Silent notification detected!");
-			void (^safeHandler)(UIBackgroundFetchResult) = ^(UIBackgroundFetchResult result){
+			void (^silentCompletionHandler)(UIBackgroundFetchResult) = ^(UIBackgroundFetchResult result){
 				dispatch_async(dispatch_get_main_queue(), ^{
 					completionHandler(result);
 				});
 			};
 			PushbotsPlugin *pushHandler = [self getCommandInstance:@"PushbotsPlugin"];
+			
+			if (pushHandler.silentHandler == nil) {
+				pushHandler.silentHandler = [NSMutableDictionary dictionaryWithCapacity:1];
+			}
+			
+			id notification_id = [userInfo objectForKey:@"pb_n_id"];
+
+            if (notification_id != nil) {
+                NSLog(@"silentCompletionHandler");
+				[pushHandler.silentHandler setObject:silentCompletionHandler forKey:notification_id];
+			}
+            
 			[pushHandler didReceiveRemoteNotification:userInfo];
 		}else {
 			completionHandler(UIBackgroundFetchResultNewData);
