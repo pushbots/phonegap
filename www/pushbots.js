@@ -118,7 +118,7 @@ PushbotsPlugin.prototype.fire = function (eventName, data) {
 * @param {string} alias
 */
 PushbotsPlugin.prototype.updateAlias = function(alias){
-	exec(this.success, this.fail, SERVICE_TITLE, 'updateAlias', [alias]);
+	exec(undefined, undefined, SERVICE_TITLE, 'updateAlias', [alias]);
 };
 
 /**
@@ -127,7 +127,7 @@ PushbotsPlugin.prototype.updateAlias = function(alias){
 * @param {string} tag
 */
 PushbotsPlugin.prototype.tag = function(tag){
-	exec(this.success, this.fail, SERVICE_TITLE, 'tag', [tag]);
+	exec(undefined, undefined, SERVICE_TITLE, 'tag', [tag]);
 };
 
 /**
@@ -136,7 +136,7 @@ PushbotsPlugin.prototype.tag = function(tag){
 *
 */
 PushbotsPlugin.prototype.resetBadge = function(){
-	exec(this.success, this.fail, SERVICE_TITLE, 'clearBadgeCount', []);
+	exec(undefined, undefined, SERVICE_TITLE, 'clearBadgeCount', []);
 };
 
 
@@ -146,7 +146,7 @@ PushbotsPlugin.prototype.resetBadge = function(){
 *
 */
 PushbotsPlugin.prototype.setBadge = function(badge){
-	exec(this.success, this.fail, SERVICE_TITLE, 'setBadge', [badge]);
+	exec(undefined, undefined, SERVICE_TITLE, 'setBadge', [badge]);
 };
 
 /**
@@ -155,7 +155,7 @@ PushbotsPlugin.prototype.setBadge = function(badge){
 * @param {string} tag
 */
 PushbotsPlugin.prototype.untag = function(tag){
-	exec(this.success, this.fail, SERVICE_TITLE, 'untag', [tag]);
+	exec(undefined, undefined, SERVICE_TITLE, 'untag', [tag]);
 };
 
 /**
@@ -164,7 +164,7 @@ PushbotsPlugin.prototype.untag = function(tag){
 * @param {boolean} debug
 */
 PushbotsPlugin.prototype.debug = function(debug){
-	exec(this.success, this.fail, SERVICE_TITLE, 'debug', [debug]);
+	exec(undefined, undefined, SERVICE_TITLE, 'debug', [debug]);
 };
 
 /**
@@ -173,7 +173,7 @@ PushbotsPlugin.prototype.debug = function(debug){
 * @param {callback} success
 */
 PushbotsPlugin.prototype.getRegistrationId = function(success){
-	exec(success, this.fail, SERVICE_TITLE, 'getRegistrationId', []);
+	exec(success, undefined, SERVICE_TITLE, 'getRegistrationId', []);
 };
 
 /**
@@ -182,7 +182,7 @@ PushbotsPlugin.prototype.getRegistrationId = function(success){
 * @param {callback} success
 */
 PushbotsPlugin.prototype.unregister = function(){
-	exec(this.success, this.fail, SERVICE_TITLE, 'unregister', []);
+	exec(undefined, undefined, SERVICE_TITLE, 'unregister', []);
 };
 
 if(!window.plugins)

@@ -24,12 +24,13 @@ import java.util.Set;
 
 public class PushbotsPlugin extends CordovaPlugin {
 
+	// _callbackContext is saved from initialize
 	private static CallbackContext _callbackContext;
 	public static CordovaWebView gwebView;
 	public static Activity mActivity;
 
 	@Override
-	public boolean execute(final String action,final JSONArray args, final CallbackContext cb) throws JSONException {
+	public boolean execute(final String action, final JSONArray args, final CallbackContext cb) throws JSONException {
 
 		gwebView = this.webView;
 		mActivity = cordova.getActivity();
@@ -107,80 +108,69 @@ public class PushbotsPlugin extends CordovaPlugin {
                         e.printStackTrace();
                     }
                 }
-				noResult();
 			}
 		});
 	}
 
-	private void _updateAlias(JSONArray args, CallbackContext cb) throws JSONException {
+	private void _updateAlias(JSONArray args, final CallbackContext cb) throws JSONException {
 
 		final String alias = args.getString(0);
-
-		_callbackContext = cb;
 
 		cordova.getActivity().runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				Pushbots.sharedInstance().setAlias(alias);
-				noResult();
+				cb.success("");
 			}
 		});
 	}
 
-	private void _tag(JSONArray args, CallbackContext cb) throws JSONException {
+	private void _tag(JSONArray args, final CallbackContext cb) throws JSONException {
 
 		final String tag = args.getString(0);
-
-		_callbackContext = cb;
 
 		cordova.getActivity().runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				Pushbots.sharedInstance().tag(tag);
-				noResult();
+				cb.success("");
 			}
 		});
 	}
 
-	private void _untag(JSONArray args, CallbackContext cb) throws JSONException {
+	private void _untag(JSONArray args, final CallbackContext cb) throws JSONException {
 
 		final String tag = args.getString(0);
-
-		_callbackContext = cb;
 
 		cordova.getActivity().runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				Pushbots.sharedInstance().untag(tag);
-				noResult();
+				cb.success("");
 			}
 		});
 	}
 
-	private void _debug(JSONArray args, CallbackContext cb) throws JSONException {
+	private void _debug(JSONArray args, final CallbackContext cb) throws JSONException {
 
 		final Boolean debug = args.getBoolean(0);
-
-		_callbackContext = cb;
 
 		cordova.getActivity().runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				Pushbots.sharedInstance().debug(debug);
-				noResult();
+				cb.success("");
 			}
 		});
 	}
 
-	private void _unregister(JSONArray args, CallbackContext cb) throws JSONException {
-
-		_callbackContext = cb;
+	private void _unregister(JSONArray args, final CallbackContext cb) throws JSONException {
 
 		cordova.getActivity().runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				Pushbots.sharedInstance().unRegister();
-				noResult();
+				cb.success("");
 			}
 		});
 	}
@@ -203,17 +193,4 @@ public class PushbotsPlugin extends CordovaPlugin {
 			}
 		}
 	}
-
-	public static void fail(String message) {
-		PluginResult result = new PluginResult(PluginResult.Status.ERROR, message);
-		result.setKeepCallback(true);
-		_callbackContext.sendPluginResult(result);
-	}
-
-	private static void noResult(){
-		PluginResult result = new PluginResult(PluginResult.Status.OK, "");
-		result.setKeepCallback(true);
-		_callbackContext.sendPluginResult(result);
-	}
-
 }
