@@ -4,11 +4,13 @@
 //
 #import "AppDelegate.h"
 #import <Cordova/CDV.h>
+#import <Pushbots/Pushbots.h>
 
 @interface PushbotsPlugin : CDVPlugin
 
 @property NSString *callbackId;
 @property (nonatomic, strong) NSDictionary *notificationPayload;
+@property (strong, nonatomic) Pushbots *PushbotsClient;
 
 - (void) initialize:(CDVInvokedUrlCommand*)command;
 

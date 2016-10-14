@@ -1,6 +1,5 @@
 #import "PushbotsPlugin.h"
 #import <Cordova/CDV.h>
-#import <Pushbots/Pushbots.h>
 #import <objc/runtime.h>
 #import <objc/message.h>
 
@@ -20,7 +19,7 @@ static char launchNotificationKey;
 		self.callbackId = command.callbackId;
 		dispatch_async(dispatch_get_main_queue(), ^{
 			//Ask for Push permission && create Pushbots sharedInstance
-			[Pushbots sharedInstanceWithAppId:appId];
+			self.PushbotsClient = [[Pushbots alloc] initWithAppId:appId prompt:YES];			
 		});
         
 		CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -36,8 +35,8 @@ static char launchNotificationKey;
 - (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     if (self.callbackId != nil) {
 		// Register the token on Pushbots
-	    [[Pushbots sharedInstance] registerOnPushbots:deviceToken];
-	
+		[self.PushbotsClient registerOnPushbots:deviceToken];
+			
 		// Send the event
 	    NSString *token = [[[[deviceToken description] stringByReplacingOccurrencesOfString:@"<"withString:@""]
 	                        stringByReplacingOccurrencesOfString:@">" withString:@""]
@@ -97,7 +96,7 @@ static char launchNotificationKey;
 		NSString* alias = [command.arguments objectAtIndex:0];
 	
 		dispatch_async(dispatch_get_main_queue(), ^{
-			[[Pushbots sharedInstance] sendAlias:alias];
+			[self.PushbotsClient setAlias:alias];
 		});
 		
 		pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -111,7 +110,7 @@ static char launchNotificationKey;
 		NSString* tag = [command.arguments objectAtIndex:0];
 	
 		dispatch_async(dispatch_get_main_queue(), ^{
-			[[Pushbots sharedInstance] tag:tag];
+			[self.PushbotsClient tag:@[tag]];			
 		});
 		
 		pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -125,7 +124,7 @@ static char launchNotificationKey;
 		NSString* tag = [command.arguments objectAtIndex:0];
 	
 		dispatch_async(dispatch_get_main_queue(), ^{
-			[[Pushbots sharedInstance] untag:tag];
+			[self.PushbotsClient untag:@[tag]];			
 		});
 		
 		pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -139,7 +138,7 @@ static char launchNotificationKey;
 		BOOL debug = [[command.arguments objectAtIndex:0]  isEqual:[NSNumber numberWithInt:1]];
 	
 		dispatch_async(dispatch_get_main_queue(), ^{
-			[[Pushbots sharedInstance] debug:debug];
+			[self.PushbotsClient debug:debug];
 		});
 		
 		pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -152,7 +151,7 @@ static char launchNotificationKey;
 		CDVPluginResult* pluginResult = nil;
 	
 		dispatch_async(dispatch_get_main_queue(), ^{
-			[[Pushbots sharedInstance] unregister];
+			[self.PushbotsClient toggleNotifications:false];			
 		});
 		
 		pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -161,10 +160,14 @@ static char launchNotificationKey;
 }
 
 - (void) getRegistrationId:(CDVInvokedUrlCommand *)command {
-	CDVPluginResult* pluginResult = nil;
-	NSString* deviceId = [[Pushbots sharedInstance] getDeviceID];
-	pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:deviceId];
-	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+	
+	[self.PushbotsClient getDevice:^(NSDictionary *device, NSError *error) {
+		CDVPluginResult* pluginResult = nil;
+		//Log device tags
+		NSString* deviceId = [device objectForKey:@"token"];
+		pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:deviceId];
+		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+	}];
 }
 
 - (void) clearBadgeCount:(CDVInvokedUrlCommand *)command {
@@ -172,7 +175,7 @@ static char launchNotificationKey;
 		CDVPluginResult* pluginResult = nil;
 	
 		dispatch_async(dispatch_get_main_queue(), ^{
-			[[Pushbots sharedInstance] clearBadgeCount];
+			[self.PushbotsClient clearBadgeCount];
 		});
 		
 		pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -187,7 +190,7 @@ static char launchNotificationKey;
 		int badge = [count intValue];
 		
 		dispatch_async(dispatch_get_main_queue(), ^{
-			[[Pushbots sharedInstance] setBadge:badge];
+			[self.PushbotsClient setBadge:badge];			
 		});
 		
 		pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -203,8 +206,7 @@ static char launchNotificationKey;
     return [self.viewController getCommandInstance:className];
 }
 
-+ (void)load
-{
++ (void)load{
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         Class class = [self class];
@@ -232,9 +234,7 @@ static char launchNotificationKey;
     });
 }
 
-
-- (AppDelegate *)swizzled_init
-{
+- (AppDelegate *)swizzled_init{
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(createNotificationObserverOnLaunching:)
                                                  name:UIApplicationDidFinishLaunchingNotification
@@ -247,8 +247,7 @@ static char launchNotificationKey;
     return [self swizzled_init];
 }
 
-- (void)createNotificationObserverOnLaunching:(NSNotification *)notification
-{
+- (void)createNotificationObserverOnLaunching:(NSNotification *)notification {
     if (notification)
     {
         NSDictionary *launchOptions = [notification userInfo];
@@ -288,13 +287,11 @@ static char launchNotificationKey;
     return objc_getAssociatedObject(self, &launchNotificationKey);
 }
 
-- (void)setLaunchNotification:(NSDictionary *)aDictionary
-{
+- (void)setLaunchNotification:(NSDictionary *)aDictionary {
     objc_setAssociatedObject(self, &launchNotificationKey, aDictionary, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
     self.launchNotification = nil; // clear the association and release the object
 }
 

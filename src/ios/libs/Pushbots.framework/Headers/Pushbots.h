@@ -1,237 +1,264 @@
-//
-//  Pushbots.h
-//  Pushbots framework 1.2.2
-//
-//  Created by Abdullah Diaa on 14/12/15.
-//  Copyright (c) 2015 PushBots Inc. All rights reserved.
-//
-
 #import <Foundation/Foundation.h>
 
 @class Pushbots;
-@class CLLocation;
+
+/*!
+ @class
+ PushBots SDK v2.0.3
+ @abstract
+ The primary interface for integrating PushBots with your app.
+ 
+ <pre>
+//in AppDelegate.h:
+@property (strong, nonatomic) Pushbots *PushbotsClient;
+//in AppDelegate.m
+ NSString *appID =  @"56c3515f357e71aa0a0";
+ self.PushbotsClient = [Pushbots sharedInstanceWithAppId:appID andLoggingEnabled:YES];
+ </pre>
+ 
+ For more advanced usage, please see the <a
+ href="https://pushbots.com/developer/docs/ios-sdk-integration">PushBots iOS SDK integration</a>.
+ */
 
 @interface Pushbots : NSObject
+
+/**
+ *  Pushbots log levels.
+ */
+typedef NS_ENUM(NSUInteger, PBLogLevel) {
+    PBLogLevelNoLogging, PBLogLevelVerbose, PBLogLevelInfo, PBLogLevelWarn, PBLogLevelError
+};
+
+@property (nonatomic, strong)NSString *deviceId;
+@property (nonatomic, strong)NSString *objectId;
+@property (nonatomic, strong) NSString *applicationId;
+@property (nonatomic, assign) BOOL prompt;
 
 /*!
  @method
  
  @abstract
- Initializes a singleton instance of the API.
+ Initializes an instance of the API.
  
  @discussion
  
  @param appId        Pushbots Application ID.
+ @param prompt
+
  */
-+ (Pushbots *)sharedInstanceWithAppId:(NSString *)appId;
+- (id)initWithAppId:(NSString*)appId;
+- (id)initWithAppId:(NSString*)appId prompt:(BOOL)prompt;
+
+/*!
+ @method
+ 
+ @discussion
+ Shared instance of PushBots automatically created by the library.
+ */
++ (Pushbots*)sharedInstance;
+
+/*!
+ @method
+ 
+ @discussion
+ Set PuhsBots SDK log level
+ <pre>[Pushbots setLogLevel:PBLogLevelVerbose];</pre>
+ 
+ @param pbloglevel   PBLogLevelNoLogging, PBLogLevelVerbose, PBLogLevelInfo, PBLogLevelWarn, PBLogLevelError
+ 
+ */
++ (void)setLogLevel:(PBLogLevel)pbloglevel;
+
+/*!
+ @method
+ 
+ @discussion
+Show prompt to register with remote notifications.
+ */
+- (void)registerForRemoteNotifications;
+
 
 /*!
  @method
  
  @abstract
- Returns the previously instantiated singleton instance of the API.
+ Registers device with all its data on PushBots servers, and increment sessions count, updates last session date.
  
  @discussion
- The API must be initialized with <code>sharedInstanceWithAppId:</code> before
- calling this class method.
- */
-+ (Pushbots *)sharedInstance;
-
-
-/*!
- @method
+ This method should be called in <code>application:didRegisterForRemoteNotificationsWithDeviceToken:</code> to register the device on PushBots servers.
  
- @abstract
- Registers device token on Pushbots servers.
- 
- @discussion
- This method should be called in <code>application:didRegisterForRemoteNotificationsWithDeviceToken:</code> to register the device on pushbots servers.
-
  @param deviceToken           Device token from Apple servers.
  */
 - (void) registerOnPushbots:(NSData *)deviceToken;
 
-
 /*!
  @method
  
  @abstract
- Registers device token on Pushbots servers.
+ Get device data from Pushbots.
  
  @discussion
- This method should be called in <code>application:didReceiveRemoteNotification:</code> to handle the notification while the app is open.
+ This method will request device data from PushBots servers, should be used to sync tags/alias.
  
- @param userInfo           A dictionary that contains information related to the remote notification, potentially including a badge number for the app icon, an alert sound, an alert message to display to the user, a notification identifier, and custom data.
+ @param callback         callback block to get device data as NSDictionary
  */
-- (void) receivedPush:(NSDictionary *)userInfo;
-
+- (void) getDevice:(void (^)(NSDictionary *device, NSError *error))callback;
 
 /*!
  @method
  
  @abstract
- Returns Device token stored in "PushbotsTokenUDID/standardUserDefaults"
+Update device data on Pushbots.
  
  @discussion
- This method will return device token stored in <code>[[NSUserDefaults standardUserDefaults] objectForKey:@"PushbotsTokenUDID"]</code>
+ This method will update device data on PushBots.
+ Device data keys:
+ tags: (array) set device tags.
+ tags_add: (array) add tags.
+ tags_remove: (array) remove tags.
+ alias: (String) set device alias.
+ badge: (Integer) set device badge.
+ badge_p: (Integer) Increment device badge.
+ badge_d: (Integet) decrement device badge.
+ debug: (Boolean) Set device debug status for sandbox.
+ subscribed: (Boolean) subscribe/unsubscribe from Push notifications.
+ location: (array)[lat, lng] update device location.
+ 
+ @param deviceObject    NSDictionary with device data to be updated.
  */
--(NSString *) getDeviceID;
-
+- (void) update:(NSDictionary *)deviceObject;
 
 /*!
  @method
  
  @abstract
- Toggles device debug mode.
  
  @discussion
- This method will toggle debug mode on the device, visit sandbox section in dashboard for more details.
+This method will toggle debug mode on the device, visit sandbox section in dashboard for more details.
  
- @param debug          Boolean value to toggle debug mode.
+ @param debug         Toggle debug mode for sandboxing.
  */
 - (void) debug:(BOOL)debug;
 
-
 /*!
  @method
  
  @abstract
- Send device location [lat/lng] to Pushbots.
  
  @discussion
- This method will update device location on Pushbots servers.
+ This method will update device alias on PushBots.
  
- @param location          Device location
+ @param alias         device alias.
  */
--(void) setLocation: (CLLocation *) location;
+- (void) setAlias:(NSString *)alias;
 
 
 /*!
  @method
  
  @abstract
- Send device location [lat/lng] to Pushbots.
  
  @discussion
- This method will update device location on Pushbots servers.
+ This method will remove device alias from PushBots.
  
- @param lat          Location latitude
- @param lng          Location longitude
-*/
--(void) setLocationLat: (NSString *) lat withLng:(NSString *) lng;
+ */
+- (void) removeAlias;
 
 
 /*!
  @method
  
  @abstract
- Update device alias on Pushbots.
  
  @discussion
- This method will update device alias on Pushbots servers.
+ This method will add tags to the device info.
  
- @param alias          Device alias
+ @param tags         Array of device tags to be added to the device.
  */
--(void) setAlias: (NSString *) alias;
-
+- (void) tag:(NSArray *)tags;
 
 /*!
  @method
  
  @abstract
- Tag the device on Pushbots.
  
  @discussion
- This method will update device tag on Pushbots servers.
+ This method will remove tags from device info.
  
- @param tag          Device tag
+ @param tags         Array of device tags to be removed from the device.
  */
--(void) tag:(NSString *)tag ;
-
+- (void) untag:(NSArray *)tags;
 
 /*!
  @method
  
  @abstract
- Remove tag from the device.
  
  @discussion
- This method will untag device from Pushbots servers.
+ This method will set badge count on Pushbots and in the app (applicationIconBadgeNumber).
  
- @param tag          Device tag
+ @param number         New badge count.
  */
--(void) untag:(NSString *)tag ;
-
+- (void) setBadge: (int) number;
 
 /*!
  @method
  
  @abstract
- Remove the device from Pushbots.
  
  @discussion
- This method will remove stored device token from pushbots server.
+ This method will increment badge count on PushBots and in the app (applicationIconBadgeNumber).
  
- @param tag          Device tag
+ @param number         badge count to add.
  */
--(void) unregister;
-
-
-/*!
- @method
-
- @abstract
- Reset badge count on Pushbots server and applicationIconBadgeNumber.
-  */
--(void) clearBadgeCount;
+- (void) incrementBadgeCountBy: (int) number;
 
 /*!
  @method
  
  @abstract
- Set badge count on Pushbots and applicationIconBadgeNumber.
+ 
+ @discussion
+ This method will decrement badge count on PushBots and in the app (applicationIconBadgeNumber).
+ 
+ @param number         badge count to substract.
  */
--(void) setBadge: (int) number;
+- (void) decrementBadgeCountBy: (int) number;
 
 /*!
  @method
  
  @abstract
- Decrement badge count on Pushbots and applicationIconBadgeNumber.
+ 
+ @discussion
+ This method will Clear badge count on PushBots and in the app (applicationIconBadgeNumber).
+ 
  */
--(void) decrementBadgeCountBy: (int) number;
+- (void) clearBadgeCount;
 
 /*!
  @method
  
  @abstract
- Record opened notification on Pushbots servers.
+ 
+ @discussion
+ This method will toggle Push notification subscription status.
+ @param subscribed        badge count to substract.
+
  */
--(void) OpenedNotification;
+- (void) toggleNotifications:(BOOL)subscribed;
 
 /*!
  @method
  
  @abstract
- Record opened notification on Pushbots servers.
+ 
+ @discussion
+ This method will toggle Push notification subscription status.
+ @param subscribed        badge count to substract.
+ 
  */
--(void) trackPushNotificationOpenedWithLaunchOptions:(NSDictionary *) launchOptions;
--(void) trackPushNotificationOpenedWithPayload:(NSDictionary *) payload;
-
-
-/*! @deprecated Get Application ID and pushOptions from pushbots.xml <=1.0.5.5 */
-+ (Pushbots *)getInstance;
-/*! @deprecated <=1.0.6 */
--(void) badgeCount:(NSString *)count ;
-/*! @deprecated <=1.0.6 */
--(void) setBadgeCount:(NSString *)count ;
-/*! @deprecated <=1.0.6 */
--(void) decreaseBadgeCountBy:(NSString *)count ;
-/*! @deprecated <=1.0.6 */
--(void) resetBadgeCount;
-/*! @deprecated <=1.0.6 */
--(void) sendAlias: (NSString *) alias;
-/*! @deprecated <=1.0.6 */
--(void) sendLocation: (CLLocation *) location;
+- (void) trackPushNotificationOpenedWithLaunchOptions:(NSDictionary *) launchOptions;
+- (void) trackPushNotificationOpenedWithPayload:(NSDictionary *) payload;
 
 @end
