@@ -181,6 +181,15 @@ PushbotsPlugin.prototype.debug = function(debug){
 };
 
 /**
+* Subscribe/Unsubscribe users from receiving notificaitons
+*
+* @param {boolean} notifications_sub
+*/
+PushbotsPlugin.prototype.toggleNotifications = function(notifications_sub){
+	exec(undefined, undefined, SERVICE_TITLE, 'toggleNotifications', [notifications_sub]);
+};
+
+/**
 * Retrieve Stored Device token
 *
 * @param {callback} success

@@ -147,6 +147,20 @@ static char launchNotificationKey;
 	}];
 }
 
+- (void) toggleNotifications:(CDVInvokedUrlCommand *)command {
+	[self.commandDelegate runInBackground:^{
+		CDVPluginResult* pluginResult = nil;
+        BOOL notifications_sub = [[command.arguments objectAtIndex:0]  isEqual:[NSNumber numberWithInt:1]];
+		
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[self.PushbotsClient toggleNotifications:notifications_sub];
+		});
+		
+		pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+	}];
+}
+
 - (void) unregister:(CDVInvokedUrlCommand *)command {
 	[self.commandDelegate runInBackground:^{
 		CDVPluginResult* pluginResult = nil;
