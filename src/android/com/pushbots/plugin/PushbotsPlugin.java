@@ -138,7 +138,16 @@ public class PushbotsPlugin extends CordovaPlugin {
 					noResult();
 				}
 			});
-	    }else if("getRegistrationId".equals(action)){
+	    }else if("toggleNotifications".equals(action)){
+			final Boolean notifications_sub = args.getBoolean(0);
+			cordova.getActivity().runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					Pushbots.sharedInstance().toggleNotifications(notifications_sub);
+					noResult();
+				}
+			});
+		}else if("getRegistrationId".equals(action)){
 			final Boolean debug = args.getBoolean(0);
 			cordova.getActivity().runOnUiThread(new Runnable() {
 				@Override
