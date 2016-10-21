@@ -46,50 +46,12 @@
 				<param name="android-package" value="com.pushbots.plugin.PushbotsPlugin"/>
 			</feature>
 		</config-file>
-
-		<config-file target="AndroidManifest.xml" parent="/manifest">
-			<!-- GCM connects to Google Services. -->
-			<uses-permission android:name="android.permission.INTERNET" />
-			<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-			<!-- GCM requires a Google account. -->
-			<uses-permission android:name="android.permission.GET_ACCOUNTS" />
-			<uses-permission android:name="android.permission.WAKE_LOCK" />
-			<permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-			<uses-permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" />
-			<!-- This app has permission to register and receive dataf message. -->
-			<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-		</config-file>
-
-		<config-file target="AndroidManifest.xml" parent="/manifest/application">
-			<receiver android:name="com.pushbots.google.gcm.GCMBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND">
-			    <intent-filter>
-			        <!-- Receives the actual messages. -->
-			        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-			        <!-- Receives the registration id. -->
-			        <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-			        <category android:name="$PACKAGE_NAME" />
-			    </intent-filter>
-			</receiver>
-      <receiver android:name="com.pushbots.plugin.PushHandler" />
-			<receiver android:name="com.pushbots.push.DefaultPushHandler" />
-			<service android:name="com.pushbots.push.GCMIntentService" />
-		</config-file>
-
-		<config-file target="AndroidManifest.xml" parent="/*/application/activity">
-			<intent-filter>
-			    <action android:name="$PACKAGE_NAME.MESSAGE" />
-			    <category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</config-file>
-
-		<source-file src="src/android/com/pushbots/plugin/PushbotsPlugin.java" target-dir="src/com/pushbots/plugin" />
-        <source-file src="src/android/com/pushbots/plugin/PushHandler.java" target-dir="src/com/pushbots/plugin" />
-
-		<source-file src="src/android/res/values/pushbots.xml" target-dir="res/values" />
-
-		<source-file src="src/android/libs/pushbots-lib-2.0.13.jar" target-dir="libs/" />
 		
-		<framework src="com.android.support:support-v4:+" />
+		<source-file src="src/android/com/pushbots/plugin/PushbotsPlugin.java" target-dir="src/com/pushbots/plugin" />
+
+		<framework src="com.pushbots:pushbots-lib:3.0.0@aar" />
+		<framework src="com.google.android.gms:play-services-gcm:9.4.0" />
+  	   	<framework src="build-extras-appid.gradle" custom="true" type="gradleReference" />
 	</platform>
 
     <!-- iPhone -->
@@ -109,11 +71,9 @@
        <header-file src="src/ios/PushbotsPlugin.h" />
        <source-file src="src/ios/PushbotsPlugin.m" />
 
-	   <framework src="CoreLocation.framework" />
 	   <framework src="SystemConfiguration.framework" />
-	   <framework src="MobileCoreServices.framework" />
 	   <framework src="CoreTelephony.framework" />
-
+	   
 	   <framework src="src/ios/libs/Pushbots.framework" custom="true" />
 
    </platform>

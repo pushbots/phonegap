@@ -117,9 +117,19 @@ PushbotsPlugin.prototype.fire = function (eventName, data) {
 *
 * @param {string} alias
 */
-PushbotsPlugin.prototype.updateAlias = function(alias){
+PushbotsPlugin.prototype.updateAlias = PushbotsPlugin.prototype.setAlias =  function(alias){
 	exec(undefined, undefined, SERVICE_TITLE, 'updateAlias', [alias]);
 };
+
+/**
+* Remove Alias of the device on Pushbots
+*
+* @param {string} alias
+*/
+PushbotsPlugin.prototype.removeAlias = function(alias){
+	exec(undefined, undefined, SERVICE_TITLE, 'removeAlias', []);
+};
+
 
 /**
 * Add tag to the device on Pushbots
@@ -194,8 +204,8 @@ PushbotsPlugin.prototype.toggleNotifications = function(notifications_sub){
 *
 * @param {callback} success
 */
-PushbotsPlugin.prototype.getRegistrationId = function(success){
-	exec(success, undefined, SERVICE_TITLE, 'getRegistrationId', []);
+PushbotsPlugin.prototype.getRegistrationId = function(success, fail){
+	exec(success, fail, SERVICE_TITLE, 'getRegistrationId', []);
 };
 
 /**

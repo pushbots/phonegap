@@ -105,6 +105,20 @@ static char launchNotificationKey;
 	}];
 }
 
+
+- (void) removeAlias:(CDVInvokedUrlCommand *)command {
+	[self.commandDelegate runInBackground:^{
+		CDVPluginResult* pluginResult = nil;
+	
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[self.PushbotsClient removeAlias];
+		});
+		
+		pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+	}];
+}
+
 - (void) tag:(CDVInvokedUrlCommand *)command {
 	[self.commandDelegate runInBackground:^{
 		CDVPluginResult* pluginResult = nil;
