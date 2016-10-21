@@ -148,7 +148,6 @@ public class PushbotsPlugin extends CordovaPlugin {
 				}
 			});
 		}else if("getRegistrationId".equals(action)){
-			final Boolean debug = args.getBoolean(0);
 			cordova.getActivity().runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
@@ -158,6 +157,14 @@ public class PushbotsPlugin extends CordovaPlugin {
 					}else{
 						_callbackContext.fail(registrationID);
 					}
+				}
+			});
+	    }else if("isNotificationEnabled".equals(action)){
+			cordova.getActivity().runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					Boolean isNotificationEnabled = Pushbots.sharedInstance().isNotificationEnabled();
+					_callbackContext.success(isNotificationEnabled);
 				}
 			});
 	    }else {
