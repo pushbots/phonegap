@@ -15,7 +15,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import com.pushbots.push.utils.PBConstants;
-
+import java.lang.reflect.Array;
+import java.util.Map;
+import java.util.Collection;
 import org.json.JSONException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -44,9 +46,23 @@ public class PushbotsPlugin extends CordovaPlugin {
 						final String senderId = options.getString("sender_id");
 					
 						Pushbots.sharedInstance().init(cordova.getActivity(), "DEBUG", applicationId, senderId);
+						Pushbots.sharedInstance().setCustomHandler(PushHandler.class);
 						Log.v(TAG,"execute: options=" + options.toString());					
-						Log.v(TAG,"registerForRemoteNotifications:" + senderId);
 						Pushbots.sharedInstance().registerForRemoteNotifications();
+						
+						Log.v(TAG,"registerForRemoteNotifications:" + senderId );
+						
+						if(null != cordova.getActivity().getIntent().getExtras()){
+							if(cordova.getActivity().getIntent().hasExtra(PBConstants.EVENT_MSG_OPEN)){
+								//Send opened event to cordova
+								try {
+									JSONObject json = new JSONObject(PushbotsPlugin.getJson(cordova.getActivity().getIntent().getExtras().getBundle(PBConstants.EVENT_MSG_OPEN)));
+									PushbotsPlugin.sendSuccessData("opened", json);
+								} catch (JSONException e) {
+									e.printStackTrace();
+								}
+							}
+						}
 						
 						Pushbots.sharedInstance().registered(new Pushbots.registeredHandler() {
 							@Override
@@ -155,7 +171,7 @@ public class PushbotsPlugin extends CordovaPlugin {
 					if(registrationID != null){
 						_callbackContext.success(registrationID);
 					}else{
-						_callbackContext.fail(registrationID);
+						_callbackContext.error("null registration Id");
 					}
 				}
 			});
@@ -164,9 +180,11 @@ public class PushbotsPlugin extends CordovaPlugin {
 				@Override
 				public void run() {
 					Boolean isNotificationEnabled = Pushbots.sharedInstance().isNotificationEnabled();
-					_callbackContext.success(isNotificationEnabled);
+					_callbackContext.success();
 				}
 			});
+	    }else if("done".equals(action)){
+			return true;
 	    }else {
             Log.e(TAG, "Invalid action : " + action);
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
@@ -207,4 +225,69 @@ public class PushbotsPlugin extends CordovaPlugin {
 		_callbackContext.sendPluginResult(result);
 	}
 
+	
+	public static String getJson(final Bundle bundle) {
+		if (bundle == null) return null;
+		JSONObject jsonObject = new JSONObject();
+
+		for (String key : bundle.keySet()) {
+			Object obj = bundle.get(key);
+			try {
+				jsonObject.put(key, wrap(bundle.get(key)));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return jsonObject.toString();
+	}
+
+	private static Object wrap(Object o) {
+		if (o == null) {
+			return JSONObject.NULL;
+		}
+		if (o instanceof JSONArray || o instanceof JSONObject) {
+			return o;
+		}
+		if (o.equals(JSONObject.NULL)) {
+			return o;
+		}
+		try {
+			if (o instanceof Collection) {
+				return new JSONArray((Collection) o);
+			} else if (o.getClass().isArray()) {
+				return toJSONArray(o);
+			}
+			if (o instanceof Map) {
+				return new JSONObject((Map) o);
+			}
+	        if (o instanceof Boolean ||
+	                o instanceof Byte ||
+	                o instanceof Character ||
+	                o instanceof Double ||
+	                o instanceof Float ||
+	                o instanceof Integer ||
+	                o instanceof Long ||
+	                o instanceof Short ||
+	                o instanceof String) {
+	            return o;
+	        }
+			if (o.getClass().getPackage().getName().startsWith("java.")) {
+				return o.toString();
+			}
+		} catch (Exception ignored) {
+		}
+		return null;
+	}
+
+	private static JSONArray toJSONArray(Object array) throws JSONException {
+		JSONArray result = new JSONArray();
+		if (!array.getClass().isArray()) {
+			throw new JSONException("Not a primitive array: " + array.getClass());
+		}
+		final int length = Array.getLength(array);
+		for (int i = 0; i < length; ++i) {
+			result.put(wrap(Array.get(array, i)));
+		}
+		return result;
+	}
 }

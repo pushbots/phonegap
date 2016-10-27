@@ -47,10 +47,19 @@
 			</feature>
 		</config-file>
 		
+		<config-file target="AndroidManifest.xml" parent="/manifest">		
+			<uses-permission android:name="android.permission.VIBRATE" />
+		</config-file>
+		
+		<config-file target="AndroidManifest.xml" parent="/manifest/application">
+			<receiver android:name="com.pushbots.plugin.PushHandler" />
+		</config-file>
+		
 		<source-file src="src/android/com/pushbots/plugin/PushbotsPlugin.java" target-dir="src/com/pushbots/plugin" />
+        <source-file src="src/android/com/pushbots/plugin/PushHandler.java" target-dir="src/com/pushbots/plugin" />
 
-		<framework src="com.pushbots:pushbots-lib:3.0.0@aar" />
-		<framework src="com.google.android.gms:play-services-gcm:9.4.0" />
+		<framework src="com.pushbots:pushbots-lib:3.0.1-beta4@aar" />
+		<framework src="com.google.android.gms:play-services-gcm:+" />
   	   	<framework src="build-extras-appid.gradle" custom="true" type="gradleReference" />
 	</platform>
 
