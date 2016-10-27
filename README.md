@@ -33,11 +33,18 @@ window.plugins.PushbotsPlugin.getRegistrationId(function(token){
 2. Methods to use it:
 ```javascript
 
-window.plugins.PushbotsPlugin.updateAlias("Test");
+window.plugins.PushbotsPlugin.setAlias("Test");
+window.plugins.PushbotsPlugin.removeAlias();
 window.plugins.PushbotsPlugin.tag("tag1");
 window.plugins.PushbotsPlugin.untag("tag1");
+
+window.plugins.PushbotsPlugin.setTags(["tag1"]);
+window.plugins.PushbotsPlugin.removeTags(["tag1"]);
+
 window.plugins.PushbotsPlugin.debug(true);
-window.plugins.PushbotsPlugin.unregister();
+
+//unsubscribe user from receiving notifications
+window.plugins.PushbotsPlugin.toggleNotifications(false);
 
 //iOS only
 
@@ -51,7 +58,7 @@ window.plugins.PushbotsPlugin.setBadge(10);
  3. To handle Notification events:
 
 ```javascript
-// Should be called once app receive the notification
+// Should be called once app receive the notification only while the application is open or in background
 window.plugins.PushbotsPlugin.on("notification:received", function(data){
 	console.log("received:" + JSON.stringify(data));
 	
