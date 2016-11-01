@@ -58,7 +58,7 @@
 		<source-file src="src/android/com/pushbots/plugin/PushbotsPlugin.java" target-dir="src/com/pushbots/plugin" />
         <source-file src="src/android/com/pushbots/plugin/PushHandler.java" target-dir="src/com/pushbots/plugin" />
 
-		<framework src="com.pushbots:pushbots-lib:3.0.1-beta4@aar" />
+		<framework src="com.pushbots:pushbots-lib:3.0.1@aar" />
 		<framework src="com.google.android.gms:play-services-gcm:+" />
   	   	<framework src="build-extras-appid.gradle" custom="true" type="gradleReference" />
 	</platform>

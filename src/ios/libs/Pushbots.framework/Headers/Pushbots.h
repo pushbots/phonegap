@@ -4,7 +4,7 @@
 
 /*!
  @class
- PushBots SDK v2.0.3
+ PushBots SDK v2.0.4
  @abstract
  The primary interface for integrating PushBots with your app.
  
@@ -26,7 +26,7 @@
  *  Pushbots log levels.
  */
 typedef NS_ENUM(NSUInteger, PBLogLevel) {
-    PBLogLevelNoLogging, PBLogLevelVerbose, PBLogLevelInfo, PBLogLevelWarn, PBLogLevelError
+    PBLogLevelNoLogging, PBLogLevelError, PBLogLevelWarn, PBLogLevelInfo, PBLogLevelVerbose
 };
 
 @property (nonatomic, strong)NSString *deviceId;
@@ -131,8 +131,6 @@ Update device data on Pushbots.
 /*!
  @method
  
- @abstract
- 
  @discussion
 This method will toggle debug mode on the device, visit sandbox section in dashboard for more details.
  
@@ -142,8 +140,6 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
 
 /*!
  @method
- 
- @abstract
  
  @discussion
  This method will update device alias on PushBots.
@@ -156,8 +152,6 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
 /*!
  @method
  
- @abstract
- 
  @discussion
  This method will remove device alias from PushBots.
  
@@ -167,8 +161,6 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
 
 /*!
  @method
- 
- @abstract
  
  @discussion
  This method will add tags to the device info.
@@ -180,8 +172,6 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
 /*!
  @method
  
- @abstract
- 
  @discussion
  This method will remove tags from device info.
  
@@ -191,8 +181,6 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
 
 /*!
  @method
- 
- @abstract
  
  @discussion
  This method will set badge count on Pushbots and in the app (applicationIconBadgeNumber).
@@ -204,8 +192,6 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
 /*!
  @method
  
- @abstract
- 
  @discussion
  This method will increment badge count on PushBots and in the app (applicationIconBadgeNumber).
  
@@ -215,8 +201,6 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
 
 /*!
  @method
- 
- @abstract
  
  @discussion
  This method will decrement badge count on PushBots and in the app (applicationIconBadgeNumber).
@@ -228,18 +212,16 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
 /*!
  @method
  
- @abstract
- 
  @discussion
  This method will Clear badge count on PushBots and in the app (applicationIconBadgeNumber).
  
  */
 - (void) clearBadgeCount;
 
++ (void)openURL:(NSDictionary *)userInfo;
+
 /*!
  @method
- 
- @abstract
  
  @discussion
  This method will toggle Push notification subscription status.
@@ -250,8 +232,6 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
 
 /*!
  @method
- 
- @abstract
  
  @discussion
  This method will toggle Push notification subscription status.

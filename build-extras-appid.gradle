@@ -3,6 +3,6 @@ android.defaultConfig {
    applicationId manifest.@package.text()
    manifestPlaceholders = [manifestApplicationId: "${android.defaultConfig.applicationId}",
                           pushbots_app_id: "CORDOVA_APP_ID",
-                          pushbots_sender_id: "CORDOVA_SENDER_ID",
+                          google_sender_id: "CORDOVA_SENDER_ID",
 						  pushbots_loglevel:"DEBUG"]
 }
