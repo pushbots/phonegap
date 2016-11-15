@@ -35,9 +35,12 @@ window.plugins.PushbotsPlugin.getRegistrationId(function(token){
 
 window.plugins.PushbotsPlugin.setAlias("Test");
 window.plugins.PushbotsPlugin.removeAlias();
+
+//Add or remove Single tag
 window.plugins.PushbotsPlugin.tag("tag1");
 window.plugins.PushbotsPlugin.untag("tag1");
 
+//Add or remove array of tags
 window.plugins.PushbotsPlugin.setTags(["tag1"]);
 window.plugins.PushbotsPlugin.removeTags(["tag1"]);
 
@@ -71,4 +74,16 @@ window.plugins.PushbotsPlugin.on("notification:received", function(data){
 window.plugins.PushbotsPlugin.on("notification:clicked", function(data){
 	console.log("clicked:" + JSON.stringify(data));
 });
+ ```
+ 
+
+##Phonegap build
+
+add Pushbots plugin to config.xml:
+
+```xml
+<gap:plugin name="pushbots-cordova-plugin" spec="^1.4.0" source="npm" />
+<preference name="phonegap-version" value="cli-6.3.0" />
+<preference name="android-build-tool" value="gradle" />
+
  ```
