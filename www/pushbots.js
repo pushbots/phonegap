@@ -140,6 +140,26 @@ PushbotsPlugin.prototype.tag = function(tag){
 	exec(undefined, undefined, SERVICE_TITLE, 'tag', [tag]);
 };
 
+
+/**
+* Add multiple tags to the device on Pushbots
+*
+* @param {string} tag
+*/
+PushbotsPlugin.prototype.setTags = function(tags){
+	exec(undefined, undefined, SERVICE_TITLE, 'setTags', [tags]);
+};
+
+
+/**
+* Remove multiple tags from the device on Pushbots
+*
+* @param {string} tag
+*/
+PushbotsPlugin.prototype.removeTags = function(tags){
+	exec(undefined, undefined, SERVICE_TITLE, 'removeTags', [tags]);
+};
+
 /**
 * [iOS Only]
 * Reset device badge locally and on Pushbots.
