@@ -230,6 +230,39 @@ static char launchNotificationKey;
 	}];
 }
 
+
+- (void) incrementBadgeCountBy:(CDVInvokedUrlCommand*)command{
+	[self.commandDelegate runInBackground:^{
+		CDVPluginResult* pluginResult = nil;
+		NSString* count = [command.arguments objectAtIndex:0];
+		int badge = [count intValue];
+		
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[self.PushbotsClient incrementBadgeCountBy:badge];			
+		});
+		
+		pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+	}];
+}
+
+- (void) decrementBadgeCountBy:(CDVInvokedUrlCommand*)command{
+	[self.commandDelegate runInBackground:^{
+		CDVPluginResult* pluginResult = nil;
+		NSString* count = [command.arguments objectAtIndex:0];
+		int badge = [count intValue];
+		
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[self.PushbotsClient decrementBadgeCountBy:badge];			
+		});
+		
+		pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+	}];
+}
+
+
+
 //Call this function to set the completion handler of silent notifications
 -(void) done:(CDVInvokedUrlCommand*)command
 {

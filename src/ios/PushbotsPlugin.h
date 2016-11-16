@@ -28,8 +28,11 @@
 - (void) getRegistrationId:(CDVInvokedUrlCommand *)command;
 - (void) notificationOpened;
 
+//iOS Badge
 - (void) clearBadgeCount:(CDVInvokedUrlCommand*)command;
 - (void) setBadge:(CDVInvokedUrlCommand*)command;
+- (void) incrementBadgeCountBy:(CDVInvokedUrlCommand*)command;
+- (void) decrementBadgeCountBy:(CDVInvokedUrlCommand*)command;
 
 @end
 

@@ -55,6 +55,10 @@ window.plugins.PushbotsPlugin.toggleNotifications(false);
 window.plugins.PushbotsPlugin.resetBadge();
 //Set badge
 window.plugins.PushbotsPlugin.setBadge(10);
+//Increment badge count
+window.plugins.PushbotsPlugin.incrementBadgeCountBy(1);
+//Decrement badge count
+window.plugins.PushbotsPlugin.decrementBadgeCountBy(10);
  ```
  
  

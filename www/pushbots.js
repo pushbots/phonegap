@@ -179,6 +179,28 @@ PushbotsPlugin.prototype.setBadge = function(badge){
 	exec(undefined, undefined, SERVICE_TITLE, 'setBadge', [badge]);
 };
 
+
+/**
+* [iOS Only]
+* Decrement device badge locally and on Pushbots.
+*
+*/
+PushbotsPlugin.prototype.decrementBadgeCountBy = function(count){
+	exec(undefined, undefined, SERVICE_TITLE, 'decrementBadgeCountBy', [count]);
+};
+
+
+/**
+* [iOS Only]
+* Increment device badge locally and on Pushbots.
+*
+*/
+PushbotsPlugin.prototype.incrementBadgeCountBy = function(count){
+	exec(undefined, undefined, SERVICE_TITLE, 'incrementBadgeCountBy', [count]);
+};
+
+
+
 /**
 * [iOS Only]
 * Silent notifications Support
