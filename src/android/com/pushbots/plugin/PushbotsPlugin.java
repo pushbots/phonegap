@@ -220,7 +220,7 @@ public class PushbotsPlugin extends CordovaPlugin {
 	}
 
 	private static void noResult(){
-		PluginResult result = new PluginResult(PluginResult.Status.OK, "");
+		PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
 		result.setKeepCallback(true);
 		_callbackContext.sendPluginResult(result);
 	}
