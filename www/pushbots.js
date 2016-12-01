@@ -61,6 +61,9 @@ PushbotsPlugin.prototype.initialize = function(app_id, options) {
 			// Opened Notification
 			}else if(data.type === "opened"){
 				that.fire("notification:clicked", data.data);
+			// User info
+			}else if(data.type === "user"){
+				that.fire("user:ids", data.data);
 			}
 		}else{
 			console.log(data);

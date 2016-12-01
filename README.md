@@ -18,14 +18,15 @@ cordova plugin add pushbots-cordova-plugin
 ```javascript
 window.plugins.PushbotsPlugin.initialize("PUSHBOTS_APPLICATIONID", {"android":{"sender_id":"SENDER_ID"}});
 
-// First time registration
+// Only with First time registration
 // This will be called on token registration/refresh with Android and with every runtime with iOS
 window.plugins.PushbotsPlugin.on("registered", function(token){
 	console.log("Registration Id:" + token);
 });
 
-window.plugins.PushbotsPlugin.getRegistrationId(function(token){
-	console.log("Registration Id:" + token);
+//Get user registrationId/token and userId on PushBots
+window.plugins.PushbotsPlugin.on("user:ids", function(data){
+	console.log("user:ids" + JSON.stringify(data));
 });
 ```
 

@@ -1,5 +1,6 @@
 package com.pushbots.plugin;
 
+import android.content.Context;
 import com.pushbots.push.Pushbots;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
@@ -22,6 +23,9 @@ import org.json.JSONException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import android.content.SharedPreferences;
+import com.pushbots.push.utils.PBPrefs;
+
 
 public class PushbotsPlugin extends CordovaPlugin {
 
@@ -30,16 +34,24 @@ public class PushbotsPlugin extends CordovaPlugin {
 	private static CordovaWebView gWebView;
 	public static Activity mActivity;
 
+	/**
+		* Gets the application context.
+		* @return the application context
+		*/
+	private Context getApplicationContext() {
+		return this.cordova.getActivity().getApplicationContext();
+	}
+
 	@Override
 	public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext)  throws JSONException{
 		Log.v(TAG, "execute: action=" + action);
 		gWebView = this.webView;
 		
 	    if ("initialize".equals(action)) {
-			_callbackContext = callbackContext;		
 	       cordova.getThreadPool().execute(new Runnable() {
 	            public void run() {
 					try{
+						_callbackContext = callbackContext;
 						final String applicationId = args.getString(0);
 						JSONObject options = null;
 						options = args.getJSONObject(1).getJSONObject("android");
@@ -64,6 +76,22 @@ public class PushbotsPlugin extends CordovaPlugin {
 							}
 						}
 						
+						String userId = PBPrefs.getObjectId(getApplicationContext());	
+						String registrationId = PBPrefs.getToken(getApplicationContext());							
+						
+						if (registrationId != null && userId != null){
+							try{
+								JSONObject json = new JSONObject();
+								json.put("token", registrationId);
+								json.put("userId", userId);
+								sendSuccessData("user", json);
+							}catch (NullPointerException e){
+								Log.e(TAG, "Null");
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+						}
+								
 						Pushbots.sharedInstance().registered(new Pushbots.registeredHandler() {
 							@Override
 							public void registered(String userId, String registrationId) {
@@ -87,7 +115,6 @@ public class PushbotsPlugin extends CordovaPlugin {
                     }
 	            }
 	        });
-			
 		}else if("updateAlias".equals(action) || "setAlias".equals(action)){
 			final String alias = args.getString(0);
 			cordova.getActivity().runOnUiThread(new Runnable() {
@@ -97,7 +124,7 @@ public class PushbotsPlugin extends CordovaPlugin {
 					noResult();
 				}
 			});
-	    }else if("removeAlias".equals(action)){
+		}else if("removeAlias".equals(action)){
 			cordova.getActivity().runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
@@ -212,7 +239,7 @@ public class PushbotsPlugin extends CordovaPlugin {
 			}
 		}
 	}
-
+	
 	public static void fail(String message) {
 		PluginResult result = new PluginResult(PluginResult.Status.ERROR, message);
 		result.setKeepCallback(true);
