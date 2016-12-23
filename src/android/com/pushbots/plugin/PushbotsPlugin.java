@@ -70,6 +70,8 @@ public class PushbotsPlugin extends CordovaPlugin {
 								try {
 									JSONObject json = new JSONObject(PushbotsPlugin.getJson(cordova.getActivity().getIntent().getExtras().getBundle(PBConstants.EVENT_MSG_OPEN)));
 									PushbotsPlugin.sendSuccessData("opened", json);
+									//Clean EVENT_MSG_OPEN bundle
+									cordova.getActivity().getIntent().removeExtra(PBConstants.EVENT_MSG_OPEN);
 								} catch (JSONException e) {
 									e.printStackTrace();
 								}
