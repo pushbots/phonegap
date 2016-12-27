@@ -21,6 +21,7 @@
 - (void) removeAlias:(CDVInvokedUrlCommand *)command;
 
 - (void) tag:(CDVInvokedUrlCommand*)command;
+- (void) update:(CDVInvokedUrlCommand*)command;
 - (void) untag:(CDVInvokedUrlCommand*)command;
 - (void) toggleNotifications:(CDVInvokedUrlCommand *)command;
 - (void) debug:(CDVInvokedUrlCommand*)command;

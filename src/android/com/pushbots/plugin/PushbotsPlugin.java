@@ -145,6 +145,15 @@ public class PushbotsPlugin extends CordovaPlugin {
 					noResult();
 				}
 			});
+	    }else if("update".equals(action)){
+			final JSONObject json = args.getJSONObject(0);			
+			cordova.getActivity().runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					Pushbots.sharedInstance().update(json);
+					noResult();
+				}
+			});
 	    }else if("setTags".equals(action)){
 			final JSONArray tags = args.getJSONArray(0);
 			cordova.getActivity().runOnUiThread(new Runnable() {

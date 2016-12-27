@@ -155,6 +155,23 @@ PushbotsPlugin.prototype.setTags = function(tags){
 
 
 /**
+* Update device info on PushBots
+*
+* @param {Object} update_obj
+
+    tags: (array) set device tags.
+    tags_add: (array) add tags.
+    tags_remove: (array) remove tags.
+    alias: (String) set device alias.
+    debug: (Boolean) Set device debug status for sandbox.
+    subscribed: (Boolean) subscribe/unsubscribe from Push notifications.
+    location: (Array) [lat, lng] update device location.
+*/
+PushbotsPlugin.prototype.update = function(update_obj){
+	exec(undefined, undefined, SERVICE_TITLE, 'update', [update_obj]);
+};
+
+/**
 * Remove multiple tags from the device on Pushbots
 *
 * @param {string} tag
