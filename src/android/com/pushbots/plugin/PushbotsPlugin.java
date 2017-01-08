@@ -47,187 +47,129 @@ public class PushbotsPlugin extends CordovaPlugin {
 		Log.v(TAG, "execute: action=" + action);
 		gWebView = this.webView;
 		
-	    if ("initialize".equals(action)) {
-	       cordova.getThreadPool().execute(new Runnable() {
-	            public void run() {
-					try{
-						_callbackContext = callbackContext;
-						final String applicationId = args.getString(0);
-						JSONObject options = null;
-						options = args.getJSONObject(1).getJSONObject("android");
-						final String senderId = options.getString("sender_id");
+		if ("initialize".equals(action)) {
+			try{
+				_callbackContext = callbackContext;
+				final String applicationId = args.getString(0);
+				JSONObject options = null;
+				options = args.getJSONObject(1).getJSONObject("android");
+				final String senderId = options.getString("sender_id");
 					
-						Pushbots.sharedInstance().init(cordova.getActivity(), "DEBUG", applicationId, senderId);
-						Pushbots.sharedInstance().setCustomHandler(PushHandler.class);
-						Log.v(TAG,"execute: options=" + options.toString());					
-						Pushbots.sharedInstance().registerForRemoteNotifications();
+				Pushbots.sharedInstance().init(cordova.getActivity(), "DEBUG", applicationId, senderId);
+				Pushbots.sharedInstance().setCustomHandler(PushHandler.class);
+				Log.v(TAG,"execute: options=" + options.toString());					
+				Pushbots.sharedInstance().registerForRemoteNotifications();
 						
-						Log.v(TAG,"registerForRemoteNotifications:" + senderId );
+				Log.v(TAG,"registerForRemoteNotifications:" + senderId );
 						
-						if(null != cordova.getActivity().getIntent().getExtras()){
-							if(cordova.getActivity().getIntent().hasExtra(PBConstants.EVENT_MSG_OPEN)){
-								//Send opened event to cordova
-								try {
-									JSONObject json = new JSONObject(PushbotsPlugin.getJson(cordova.getActivity().getIntent().getExtras().getBundle(PBConstants.EVENT_MSG_OPEN)));
-									PushbotsPlugin.sendSuccessData("opened", json);
-									//Clean EVENT_MSG_OPEN bundle
-									cordova.getActivity().getIntent().removeExtra(PBConstants.EVENT_MSG_OPEN);
-								} catch (JSONException e) {
-									e.printStackTrace();
-								}
-							}
+				if(null != cordova.getActivity().getIntent().getExtras()){
+					if(cordova.getActivity().getIntent().hasExtra(PBConstants.EVENT_MSG_OPEN)){
+						//Send opened event to cordova
+						try {
+							JSONObject json = new JSONObject(PushbotsPlugin.getJson(cordova.getActivity().getIntent().getExtras().getBundle(PBConstants.EVENT_MSG_OPEN)));
+							PushbotsPlugin.sendSuccessData("opened", json);
+							//Clean EVENT_MSG_OPEN bundle
+							cordova.getActivity().getIntent().removeExtra(PBConstants.EVENT_MSG_OPEN);
+						} catch (JSONException e) {
+							e.printStackTrace();
 						}
+					}
+				}
 						
-						String userId = PBPrefs.getObjectId(getApplicationContext());	
-						String registrationId = PBPrefs.getToken(getApplicationContext());							
+				String userId = PBPrefs.getObjectId(getApplicationContext());	
+				String registrationId = PBPrefs.getToken(getApplicationContext());							
 						
-						if (registrationId != null && userId != null){
+				if (registrationId != null && userId != null){
+					try{
+						JSONObject json = new JSONObject();
+						json.put("token", registrationId);
+						json.put("userId", userId);
+						sendSuccessData("user", json);
+					}catch (NullPointerException e){
+						Log.e(TAG, "Null");
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+								
+				Pushbots.sharedInstance().registered(new Pushbots.registeredHandler() {
+					@Override
+					public void registered(String userId, String registrationId) {
+						if (registrationId != null){
 							try{
 								JSONObject json = new JSONObject();
 								json.put("token", registrationId);
 								json.put("userId", userId);
-								sendSuccessData("user", json);
+								sendSuccessData("registered", json);
 							}catch (NullPointerException e){
 								Log.e(TAG, "Null");
 							} catch (JSONException e) {
 								e.printStackTrace();
 							}
 						}
-								
-						Pushbots.sharedInstance().registered(new Pushbots.registeredHandler() {
-							@Override
-							public void registered(String userId, String registrationId) {
-								if (registrationId != null){
-									try{
-										JSONObject json = new JSONObject();
-										json.put("token", registrationId);
-										json.put("userId", userId);
-										sendSuccessData("registered", json);
-									}catch (NullPointerException e){
-										Log.e(TAG, "Null");
-									} catch (JSONException e) {
-										e.printStackTrace();
-									}
-								}
-							}
-						});
-						noResult();
-					} catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-	            }
-	        });
+					}
+				});
+				noResult();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+	         
 		}else if("updateAlias".equals(action) || "setAlias".equals(action)){
 			final String alias = args.getString(0);
-			cordova.getActivity().runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					Pushbots.sharedInstance().setAlias(alias);
-					noResult();
-				}
-			});
+			Pushbots.sharedInstance().setAlias(alias);
+			noResult();
 		}else if("removeAlias".equals(action)){
-			cordova.getActivity().runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					Pushbots.sharedInstance().removeAlias();
-					noResult();
-				}
-			});
-	    }else if("tag".equals(action)){
+			Pushbots.sharedInstance().removeAlias();
+			noResult();
+		}else if("tag".equals(action)){
 			final String tag = args.getString(0);
 			final JSONArray tags = new JSONArray();
 			tags.put(tag);
-			cordova.getActivity().runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					Pushbots.sharedInstance().tag(tags);
-					noResult();
-				}
-			});
-	    }else if("update".equals(action)){
+			Pushbots.sharedInstance().tag(tags);
+			noResult();
+		}else if("update".equals(action)){
 			final JSONObject json = args.getJSONObject(0);			
-			cordova.getActivity().runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					Pushbots.sharedInstance().update(json);
-					noResult();
-				}
-			});
-	    }else if("setTags".equals(action)){
+			Pushbots.sharedInstance().update(json);
+			noResult();
+		}else if("setTags".equals(action)){
 			final JSONArray tags = args.getJSONArray(0);
-			cordova.getActivity().runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					Pushbots.sharedInstance().tag(tags);
-					noResult();
-				}
-			});
-	    }else if("untag".equals(action)){
+			Pushbots.sharedInstance().tag(tags);
+			noResult();
+		}else if("untag".equals(action)){
 			final String tag = args.getString(0);
 			final JSONArray tags = new JSONArray();
 			tags.put(tag);
-			cordova.getActivity().runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					Pushbots.sharedInstance().untag(tags);
-					noResult();
-				}
-			});
-	    }else if("removeTags".equals(action)){
+			Pushbots.sharedInstance().untag(tags);
+			noResult();
+		}else if("removeTags".equals(action)){
 			final JSONArray tags = args.getJSONArray(0);
-			cordova.getActivity().runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					Pushbots.sharedInstance().untag(tags);
-					noResult();
-				}
-			});
-	    } else if("debug".equals(action)){
+			Pushbots.sharedInstance().untag(tags);
+			noResult();
+		} else if("debug".equals(action)){
 			final Boolean debug = args.getBoolean(0);
-			cordova.getActivity().runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					Pushbots.sharedInstance().debug(debug);
-					noResult();
-				}
-			});
-	    }else if("toggleNotifications".equals(action)){
+			Pushbots.sharedInstance().debug(debug);
+			noResult();
+		}else if("toggleNotifications".equals(action)){
 			final Boolean notifications_sub = args.getBoolean(0);
-			cordova.getActivity().runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					Pushbots.sharedInstance().toggleNotifications(notifications_sub);
-					noResult();
-				}
-			});
+			Pushbots.sharedInstance().toggleNotifications(notifications_sub);
+			noResult();
 		}else if("getRegistrationId".equals(action)){
-			cordova.getActivity().runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					String registrationID = Pushbots.sharedInstance().getGCMRegistrationId();
-					if(registrationID != null){
-						_callbackContext.success(registrationID);
-					}else{
-						_callbackContext.error("null registration Id");
-					}
-				}
-			});
-	    }else if("isNotificationEnabled".equals(action)){
-			cordova.getActivity().runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					Boolean isNotificationEnabled = Pushbots.sharedInstance().isNotificationEnabled();
-					_callbackContext.success();
-				}
-			});
-	    }else if("done".equals(action)){
+			String registrationID = Pushbots.sharedInstance().getGCMRegistrationId();
+			if(registrationID != null){
+				_callbackContext.success(registrationID);
+			}else{
+				_callbackContext.error("null registration Id");
+			}
+		}else if("isNotificationEnabled".equals(action)){
+			Boolean isNotificationEnabled = Pushbots.sharedInstance().isNotificationEnabled();
+			_callbackContext.success();
+		}else if("done".equals(action)){
 			return true;
-	    }else {
-            Log.e(TAG, "Invalid action : " + action);
-            callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
-            return false;
-        }
+		}else {
+			Log.e(TAG, "Invalid action : " + action);
+			callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
+			return false;
+		}
 		
 		return true;
 	}
