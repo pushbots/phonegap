@@ -75,23 +75,25 @@ public class PushbotsPlugin extends CordovaPlugin {
 						}
 					}
 				}
-						
-				String userId = PBPrefs.getObjectId(getApplicationContext());	
-				String registrationId = PBPrefs.getToken(getApplicationContext());							
-						
-				if (registrationId != null && userId != null){
-					try{
-						JSONObject json = new JSONObject();
-						json.put("token", registrationId);
-						json.put("userId", userId);
-						sendSuccessData("user", json);
-					}catch (NullPointerException e){
-						Log.e(TAG, "Null");
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
-				}
-								
+				
+		        Pushbots.sharedInstance().idsCallback(new Pushbots.idHandler() {
+		            @Override
+		            public void userIDs(String userId, String registrationId) {
+						if (registrationId != null && userId != null){
+							try{
+								JSONObject json = new JSONObject();
+								json.put("token", registrationId);
+								json.put("userId", userId);
+								sendSuccessData("user", json);
+							}catch (NullPointerException e){
+								Log.e(TAG, "Null");
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+						}
+		            }
+		        });
+				
 				Pushbots.sharedInstance().registered(new Pushbots.registeredHandler() {
 					@Override
 					public void registered(String userId, String registrationId) {
