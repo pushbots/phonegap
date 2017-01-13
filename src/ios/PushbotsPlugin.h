@@ -19,10 +19,13 @@
 
 - (void) updateAlias:(CDVInvokedUrlCommand *)command;
 - (void) removeAlias:(CDVInvokedUrlCommand *)command;
+- (void) update:(CDVInvokedUrlCommand*)command;
 
 - (void) tag:(CDVInvokedUrlCommand*)command;
-- (void) update:(CDVInvokedUrlCommand*)command;
 - (void) untag:(CDVInvokedUrlCommand*)command;
+- (void) setTags:(CDVInvokedUrlCommand *)command;
+- (void) removeTags:(CDVInvokedUrlCommand *)command;
+
 - (void) toggleNotifications:(CDVInvokedUrlCommand *)command;
 - (void) debug:(CDVInvokedUrlCommand*)command;
 - (void) unregister:(CDVInvokedUrlCommand *)command;
