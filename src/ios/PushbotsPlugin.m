@@ -119,6 +119,7 @@ static char launchNotificationKey;
         NSMutableDictionary* responseDict = [NSMutableDictionary dictionaryWithCapacity:2];
         [responseDict setObject:@"opened" forKey:@"type"];
         [responseDict setObject:self.notificationPayload forKey:@"data"];
+        self.notificationPayload = nil;
         [self sendSuccessCallback:responseDict];
     }
 }
