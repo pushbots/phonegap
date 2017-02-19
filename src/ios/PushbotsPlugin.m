@@ -101,10 +101,13 @@ static char launchNotificationKey;
             self.notificationPayload = userInfo;
         }
         
+		[Pushbots openURL:userInfo];
+        
         // Send event of type "received" with the token
         NSMutableDictionary* responseDict = [NSMutableDictionary dictionaryWithCapacity:2];
         [responseDict setObject:@"received" forKey:@"type"];
         [responseDict setObject:userInfo forKey:@"data"];
+        self.notificationPayload = nil;
         [self sendSuccessCallback:responseDict];
         
     }
@@ -115,6 +118,8 @@ static char launchNotificationKey;
     
     if (self.notificationPayload != nil)
     {
+        //Track opened notifications
+        [self.PushbotsClient trackPushNotificationOpenedWithPayload:self.notificationPayload];
         // Send event of type "opened" with the token
         NSMutableDictionary* responseDict = [NSMutableDictionary dictionaryWithCapacity:2];
         [responseDict setObject:@"opened" forKey:@"type"];
