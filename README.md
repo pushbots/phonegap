@@ -77,7 +77,9 @@ window.plugins.PushbotsPlugin.on("notification:received", function(data){
 
 // Should be called once the notification is clicked
 window.plugins.PushbotsPlugin.on("notification:clicked", function(data){
-	console.log("clicked:" + JSON.stringify(data));
+	// var userToken = data.token; 
+       // var userId = data.userId;
+  	console.log("clicked:" + JSON.stringify(data));
 });
  ```
  
