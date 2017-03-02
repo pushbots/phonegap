@@ -30,7 +30,7 @@
 - (void) debug:(CDVInvokedUrlCommand*)command;
 - (void) unregister:(CDVInvokedUrlCommand *)command;
 - (void) getRegistrationId:(CDVInvokedUrlCommand *)command;
-- (void) notificationOpened;
+- (void)notificationOpened:(NSDictionary *)userInfo;
 
 //iOS Badge
 - (void) clearBadgeCount:(CDVInvokedUrlCommand*)command;

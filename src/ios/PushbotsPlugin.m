@@ -27,8 +27,9 @@ static char launchNotificationKey;
         [result setKeepCallbackAsBool:YES];
         [self.commandDelegate sendPluginResult:result callbackId:self.callbackId];
         
-        if (notificationPayload){
-            [self notificationOpened];
+        if (self.notificationPayload){
+            [self notificationOpened:self.notificationPayload];
+            self.notificationPayload = nil;
         }
         
     }];
@@ -70,7 +71,7 @@ static char launchNotificationKey;
             [responseDict setObject:regDict forKey:@"data"];
             [self sendSuccessCallback:responseDict];
         }else{
-             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(registeredWithPushbots:) name:NSUserDefaultsDidChangeNotification object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(registeredWithPushbots:) name:NSUserDefaultsDidChangeNotification object:nil];
         }
         
     }
@@ -83,7 +84,7 @@ static char launchNotificationKey;
     
     NSString *objectId = [defaults stringForKey:@"com.pushbots.api.object_id"];
     NSString *token = [defaults stringForKey:@"com.pushbots.api.deviceID"];
-
+    
     if(objectId != nil && token != nil){
         NSMutableDictionary* responseDict = [NSMutableDictionary dictionaryWithCapacity:2];
         [responseDict setObject:@"user" forKey:@"type"];
@@ -101,7 +102,7 @@ static char launchNotificationKey;
             self.notificationPayload = userInfo;
         }
         
-		[Pushbots openURL:userInfo];
+        [Pushbots openURL:userInfo];
         
         // Send event of type "received" with the token
         NSMutableDictionary* responseDict = [NSMutableDictionary dictionaryWithCapacity:2];
@@ -113,20 +114,21 @@ static char launchNotificationKey;
     }
 }
 
-- (void)notificationOpened {
-    NSLog(@"Notification opened");
+- (void)notificationOpened:(NSDictionary *)userInfo {
     
-    if (self.notificationPayload != nil)
-    {
-        //Track opened notifications
-        [self.PushbotsClient trackPushNotificationOpenedWithPayload:self.notificationPayload];
-        // Send event of type "opened" with the token
-        NSMutableDictionary* responseDict = [NSMutableDictionary dictionaryWithCapacity:2];
-        [responseDict setObject:@"opened" forKey:@"type"];
-        [responseDict setObject:self.notificationPayload forKey:@"data"];
-        self.notificationPayload = nil;
-        [self sendSuccessCallback:responseDict];
-    }
+     dispatch_async(dispatch_get_main_queue(), ^{
+         //Track opened notifications
+         [self.PushbotsClient trackPushNotificationOpenedWithPayload:userInfo];
+    });
+    
+    NSLog(@"Notification opened");
+    // Send event of type "opened" with the token
+    NSMutableDictionary* responseDict = [NSMutableDictionary dictionaryWithCapacity:2];
+    [responseDict setObject:@"opened" forKey:@"type"];
+    [responseDict setObject:userInfo forKey:@"data"];
+    
+    [self sendSuccessCallback:responseDict];
+
 }
 
 - (void)sendSuccessCallback:(NSDictionary *)data {
@@ -492,8 +494,7 @@ static char launchNotificationKey;
             [pushHandler didReceiveRemoteNotification:userInfo];
         }else {
             PushbotsPlugin *pushHandler = [self getCommandInstance:@"PushbotsPlugin"];
-            pushHandler.notificationPayload = userInfo;
-            [pushHandler notificationOpened];
+            [pushHandler notificationOpened:userInfo];
             completionHandler(UIBackgroundFetchResultNewData);
         }
     }
@@ -501,14 +502,11 @@ static char launchNotificationKey;
 
 - (void)applicationDidBecomeActive:(NSNotification *)notification {
     
-    NSLog(@"active");
-    
+    NSLog(@"applicationDidBecomeActive");
     PushbotsPlugin *pushHandler = [self getCommandInstance:@"PushbotsPlugin"];
-    
     if (self.launchNotification) {
-        pushHandler.notificationPayload = self.launchNotification;
+        pushHandler.notificationPayload = [self.launchNotification copy];
         self.launchNotification = nil;
-        [pushHandler performSelectorOnMainThread:@selector(notificationOpened) withObject:pushHandler waitUntilDone:NO];
     }
 }
 
