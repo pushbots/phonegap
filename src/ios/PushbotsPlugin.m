@@ -493,17 +493,17 @@ static char launchNotificationKey;
             
             [pushHandler didReceiveRemoteNotification:userInfo];
         }else {
+			//The application is brought from background to foreground
             PushbotsPlugin *pushHandler = [self getCommandInstance:@"PushbotsPlugin"];
-            [pushHandler notificationOpened:userInfo];
+            [pushHandler didReceiveRemoteNotification:userInfo];
             completionHandler(UIBackgroundFetchResultNewData);
         }
     }
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)notification {
-    
-    NSLog(@"applicationDidBecomeActive");
     PushbotsPlugin *pushHandler = [self getCommandInstance:@"PushbotsPlugin"];
+	
     if (self.launchNotification) {
         pushHandler.notificationPayload = [self.launchNotification copy];
         self.launchNotification = nil;
