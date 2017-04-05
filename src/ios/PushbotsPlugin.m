@@ -96,7 +96,7 @@ static char launchNotificationKey;
     }
 }
 
-- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo{
+- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo from:(NSString *)from{
     if (self.callbackId != nil) {
         if ( [UIApplication sharedApplication].applicationState != UIApplicationStateActive ) {
             self.notificationPayload = userInfo;
@@ -106,19 +106,19 @@ static char launchNotificationKey;
         
         // Send event of type "received" with the token
         NSMutableDictionary* responseDict = [NSMutableDictionary dictionaryWithCapacity:2];
+        [responseDict setObject:from forKey:@"source"];
         [responseDict setObject:@"received" forKey:@"type"];
         [responseDict setObject:userInfo forKey:@"data"];
         self.notificationPayload = nil;
         [self sendSuccessCallback:responseDict];
-        
     }
 }
 
 - (void)notificationOpened:(NSDictionary *)userInfo {
     
-     dispatch_async(dispatch_get_main_queue(), ^{
-         //Track opened notifications
-         [self.PushbotsClient trackPushNotificationOpenedWithPayload:userInfo];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        //Track opened notifications
+        [self.PushbotsClient trackPushNotificationOpenedWithPayload:userInfo];
     });
     
     NSLog(@"Notification opened");
@@ -128,7 +128,7 @@ static char launchNotificationKey;
     [responseDict setObject:userInfo forKey:@"data"];
     
     [self sendSuccessCallback:responseDict];
-
+    
 }
 
 - (void)sendSuccessCallback:(NSDictionary *)data {
@@ -288,7 +288,7 @@ static char launchNotificationKey;
     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"com.pushbots.api.deviceID"];
     
     if (!token || [token isEqualToString:@""])
-        return;
+    return;
     
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:token];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -463,7 +463,7 @@ static char launchNotificationKey;
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:( void (^)(UIBackgroundFetchResult))completionHandler;{
     if (application.applicationState == UIApplicationStateActive) {
         PushbotsPlugin *pushHandler = [self getCommandInstance:@"PushbotsPlugin"];
-        [pushHandler didReceiveRemoteNotification:userInfo];
+        [pushHandler didReceiveRemoteNotification:userInfo from:@"foreground"];
         completionHandler(UIBackgroundFetchResultNewData);
     }else{
         
@@ -490,12 +490,11 @@ static char launchNotificationKey;
                 NSLog(@"silentCompletionHandler");
                 [pushHandler.silentHandler setObject:silentCompletionHandler forKey:notification_id];
             }
-            
-            [pushHandler didReceiveRemoteNotification:userInfo];
+            [pushHandler didReceiveRemoteNotification:userInfo from:@"hidden"];
         }else {
-			//The application is brought from background to foreground
+            //The application is brought from background to foreground
             PushbotsPlugin *pushHandler = [self getCommandInstance:@"PushbotsPlugin"];
-            [pushHandler didReceiveRemoteNotification:userInfo];
+            [pushHandler didReceiveRemoteNotification:userInfo from:@"background"];
             completionHandler(UIBackgroundFetchResultNewData);
         }
     }
@@ -503,7 +502,7 @@ static char launchNotificationKey;
 
 - (void)applicationDidBecomeActive:(NSNotification *)notification {
     PushbotsPlugin *pushHandler = [self getCommandInstance:@"PushbotsPlugin"];
-	
+    
     if (self.launchNotification) {
         pushHandler.notificationPayload = [self.launchNotification copy];
         self.launchNotification = nil;

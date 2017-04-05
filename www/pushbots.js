@@ -57,6 +57,9 @@ PushbotsPlugin.prototype.initialize = function(app_id, options) {
 				that.fire("registered", data.data.deviceToken);
 			// Received Notification
 			}else if(data.type === "received"){
+				if(data.source != undefined){
+					data.data.cordova_source = data.source ;
+				}
 				that.fire("notification:received", data.data);
 			// Opened Notification
 			}else if(data.type === "opened"){

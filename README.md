@@ -70,6 +70,8 @@ window.plugins.PushbotsPlugin.decrementBadgeCountBy(10);
 window.plugins.PushbotsPlugin.on("notification:received", function(data){
 	console.log("received:" + JSON.stringify(data));
 	
+	//iOS only [foreground/background]
+	console.log("notification opened from:" + data.cordova_source);
 	//Silent notifications Only [iOS only]
 	//Send CompletionHandler signal with PushBots notification Id
 	window.plugins.PushbotsPlugin.done(data.pb_n_id);
@@ -89,7 +91,7 @@ window.plugins.PushbotsPlugin.on("notification:clicked", function(data){
 add Pushbots plugin to config.xml:
 
 ```xml
-<gap:plugin name="pushbots-cordova-plugin" spec="^1.4.5" source="npm" />
+<gap:plugin name="pushbots-cordova-plugin" spec="^1.4.6" source="npm" />
 <preference name="phonegap-version" value="cli-6.3.0" />
 <preference name="android-build-tool" value="gradle" />
 
