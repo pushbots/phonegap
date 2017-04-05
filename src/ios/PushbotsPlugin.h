@@ -41,4 +41,4 @@
 
 @interface AppDelegate (PushbotsPlugin)
 @property (nonatomic, retain) NSDictionary *launchNotification;
-@end@end
+@end
