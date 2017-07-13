@@ -20,7 +20,7 @@
 	<engines>
 		<engine name="cordova" version=">=3.6.3"/>
 		<engine name="cordova-android" version=">=5.2.0"/>
-		<engine name="cordova-ios" version=">=4.1.0"/>
+		<engine name="cordova-ios" version=">=4.3.0"/>
 		<engine name="apple-ios" version=">=7.0.0" />
 		<engine name="apple-xcode" version=">=7.0.0" />
 	</engines>
@@ -71,6 +71,15 @@
 			   <param name="ios-package" value="PushbotsPlugin" />
 		   </feature>
 	   </config-file>
+
+	   <config-file parent="aps-environment" target="*/Entitlements-Debug.plist">
+		   <string>development</string>
+	   </config-file>
+	   
+	   <config-file parent="aps-environment" target="*/Entitlements-Release.plist">
+		   <string>production</string>
+	   </config-file>
+
 
        <info>
             In order to run this plugin, you need to Create application on Pushbots.
