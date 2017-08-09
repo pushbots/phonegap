@@ -2,7 +2,8 @@
 
 > PushBots' official module for Phonegap/Cordova
 
-https://pushbots.com/developer/docs/phonegap-sdk-integration
+https://www.pushbots.help/install-pushbots-in-your-app-or-website/cordova-phonegap-and-phonegap-build/integrating-pushbots-in-your-cordovaphonegap-app
+
 
 ## Installation
 
