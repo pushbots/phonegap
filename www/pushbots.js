@@ -92,6 +92,7 @@ PushbotsPlugin.prototype.on = function (eventName, callback) {
 	if (typeof callback !== 'function')
 		return;
 	
+	// Save events even if initialize not called.
 	if(!this._events)
         this._events = {};
 
