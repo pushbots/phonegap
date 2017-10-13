@@ -32,7 +32,6 @@ PushbotsPlugin.prototype.initialize = function(app_id, options) {
 	if(!this._events)
 		this._events = {};
 
-	
 	/* VALIDATE APP_ID */
 	// Pushbots Application ID is required
 	if (typeof app_id === 'undefined') {
@@ -73,8 +72,6 @@ PushbotsPlugin.prototype.initialize = function(app_id, options) {
 		}else{
 			console.log(data);
 		}
-
-		alert(JSON.stringify(data));
 	};
 	
 	var fail = function(error){
