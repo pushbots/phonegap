@@ -29,7 +29,9 @@ var PushbotsPlugin = function() {};
 */
 PushbotsPlugin.prototype.initialize = function(app_id, options) {
 	
-	this._events = {};
+	if(!this._events)
+		this._events = {};
+
 	
 	/* VALIDATE APP_ID */
 	// Pushbots Application ID is required
@@ -91,6 +93,9 @@ PushbotsPlugin.prototype.on = function (eventName, callback) {
 	if (typeof callback !== 'function')
 		return;
 	
+	if(!this._events)
+        this._events = {};
+
 	if (! this._events.hasOwnProperty(eventName)) {
 		this._events[eventName] = [];
 	}
@@ -105,7 +110,7 @@ PushbotsPlugin.prototype.on = function (eventName, callback) {
 * @param {Object} data - data to handle on event execution
 */
 PushbotsPlugin.prototype.fire = function (eventName, data) {
-	if (this._events.hasOwnProperty(eventName)) {
+	if (this._events && this._events.hasOwnProperty(eventName)) {
 		var cbs = this._events[eventName];
 		for (var i = 0, len = cbs.length; i < len; i++) {
 			if(data){
