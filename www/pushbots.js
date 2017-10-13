@@ -73,6 +73,8 @@ PushbotsPlugin.prototype.initialize = function(app_id, options) {
 		}else{
 			console.log(data);
 		}
+
+		alert(JSON.stringify(data));
 	};
 	
 	var fail = function(error){
