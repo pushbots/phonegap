@@ -2,7 +2,8 @@
 
 > PushBots' official module for Phonegap/Cordova
 
-https://pushbots.com/developer/docs/phonegap-sdk-integration
+https://www.pushbots.help/install-pushbots-in-your-app-or-website/cordova-phonegap-and-phonegap-build/integrating-pushbots-in-your-cordovaphonegap-app
+
 
 ## Installation
 
@@ -91,7 +92,7 @@ window.plugins.PushbotsPlugin.on("notification:clicked", function(data){
 add Pushbots plugin to config.xml:
 
 ```xml
-<gap:plugin name="pushbots-cordova-plugin" spec="^1.4.7" source="npm" />
+<gap:plugin name="pushbots-cordova-plugin" spec="^1.4.8" source="npm" />
 <preference name="phonegap-version" value="cli-6.3.0" />
 <preference name="android-build-tool" value="gradle" />
 
