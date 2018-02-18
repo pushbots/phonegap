@@ -12,7 +12,6 @@
 
 @property NSString *callbackId;
 @property (nonatomic, strong) NSDictionary *notificationPayload;
-@property (strong, nonatomic) Pushbots *PushbotsClient;
 @property (nonatomic, strong) NSMutableDictionary *silentHandler;
 
 - (void) initialize:(CDVInvokedUrlCommand*)command;
@@ -37,8 +36,4 @@
 - (void) incrementBadgeCountBy:(CDVInvokedUrlCommand*)command;
 - (void) decrementBadgeCountBy:(CDVInvokedUrlCommand*)command;
 
-@end
-
-@interface AppDelegate (PushbotsPlugin)
-@property (nonatomic, retain) NSDictionary *launchNotification;
 @end

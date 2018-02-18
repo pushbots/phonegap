@@ -18,9 +18,9 @@
 	<keywords>push, notifications, pushnotifications, apns, GCM, C2DM, Android push notifications,Push Bots, PushBots, phonegap</keywords>
 
 	<engines>
-		<engine name="cordova" version=">=6.4.0"/>
+		<engine name="cordova" version=">=7.0.0"/>
 		<engine name="cordova-android" version=">=5.2.0"/>
-		<engine name="cordova-ios" version=">=4.3.0"/>
+		<engine name="cordova-ios" version=">=4.4.0"/>
 		<engine name="apple-ios" version=">=8.0.0" />
 		<engine name="apple-xcode" version=">=8.0.0" />
 	</engines>
@@ -96,7 +96,7 @@
 	   <framework src="SystemConfiguration.framework" />
 	   <framework src="CoreTelephony.framework" />
 	   
-	   <framework src="src/ios/libs/Pushbots.framework" custom="true" />
+	   <framework src="src/ios/libs/Pushbots.framework" custom="true" embed="true" />
 
    </platform>
 

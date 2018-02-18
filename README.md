@@ -20,12 +20,11 @@ cordova plugin add pushbots-cordova-plugin
 window.plugins.PushbotsPlugin.initialize("PUSHBOTS_APPLICATIONID", {"android":{"sender_id":"SENDER_ID"}});
 
 // Only with First time registration
-// This will be called on token registration/refresh with Android and with every runtime with iOS
 window.plugins.PushbotsPlugin.on("registered", function(token){
 	console.log("Registration Id:" + token);
 });
 
-//Get user registrationId/token and userId on PushBots
+//Get user registrationId/token and userId on PushBots, with evey launch of the app even launching with notification
 window.plugins.PushbotsPlugin.on("user:ids", function(data){
 	console.log("user:ids" + JSON.stringify(data));
 });
@@ -71,14 +70,14 @@ window.plugins.PushbotsPlugin.decrementBadgeCountBy(10);
 window.plugins.PushbotsPlugin.on("notification:received", function(data){
 	console.log("received:" + JSON.stringify(data));
 	
-	//iOS only [foreground/background]
-	console.log("notification opened from:" + data.cordova_source);
+	//iOS: [foreground/background]
+	console.log("notification received from:" + data.cordova_source);
 	//Silent notifications Only [iOS only]
 	//Send CompletionHandler signal with PushBots notification Id
 	window.plugins.PushbotsPlugin.done(data.pb_n_id);
 });
 
-// Should be called once the notification is clicked
+// Should be called once the notification is clicked from foreground or background
 window.plugins.PushbotsPlugin.on("notification:clicked", function(data){
 	// var userToken = data.token; 
        // var userId = data.userId;

@@ -1,10 +1,17 @@
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+
+//Use UserNotifications with iOS 10+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 100000
+#define IOS10PLUS 1
+#import <UserNotifications/UserNotifications.h>
+#endif
 
 @class Pushbots;
 
 /*!
  @class
- PushBots SDK v2.0.4
+ PushBots SDK v2.1-beta6
  @abstract
  The primary interface for integrating PushBots with your app.
  
@@ -20,8 +27,8 @@
  href="https://pushbots.com/developer/docs/ios-sdk-integration">PushBots iOS SDK integration</a>.
  */
 
-@interface Pushbots : NSObject
 
+@interface Pushbots : NSObject
 /**
  *  Pushbots log levels.
  */
@@ -29,10 +36,26 @@ typedef NS_ENUM(NSUInteger, PBLogLevel) {
     PBLogLevelNoLogging, PBLogLevelError, PBLogLevelWarn, PBLogLevelInfo, PBLogLevelVerbose
 };
 
-@property (nonatomic, strong)NSString *deviceId;
-@property (nonatomic, strong)NSString *objectId;
-@property (nonatomic, strong) NSString *applicationId;
-@property (nonatomic, assign) BOOL prompt;
++ (NSString*)applicationId;
++ (NSString*)deviceId;
++ (BOOL) prompt;
++ (BOOL) receivedCallback;
+
+typedef void (^PushBotsReceivedNotification)(NSDictionary * result);
+typedef void (^PushBotsOpenedNotification)(NSDictionary * result);
+/*!
+ @method
+ 
+ @abstract
+ Initializes an instance of the API.
+ 
+ @discussion
+ Initializes an instance of the PushBots.
+
+ @param appId        Pushbots Application ID.
+ @param launchOptions   launchOptions
+ */
++(id)initWithAppId:(NSString*)appId withLaunchOptions:(NSDictionary *)launchOptions;
 
 /*!
  @method
@@ -41,22 +64,34 @@ typedef NS_ENUM(NSUInteger, PBLogLevel) {
  Initializes an instance of the API.
  
  @discussion
+ Initializes an instance of the PushBots.
  
  @param appId        Pushbots Application ID.
- @param prompt
-
+ @param launchOptions   launchOptions
+ @param prompt      Push notification prompt on first app open.
+ 
  */
-- (id)initWithAppId:(NSString*)appId;
-- (id)initWithAppId:(NSString*)appId prompt:(BOOL)prompt;
++ (id)initWithAppId:(NSString*)appId withLaunchOptions:(NSDictionary *)launchOptions prompt:(BOOL)prompt;
++ (id)initWithAppId:(NSString*)appId withLaunchOptions:(NSDictionary *)launchOptions prompt:(BOOL)p receivedNotification:(PushBotsReceivedNotification)rCallback openedNotification:(PushBotsOpenedNotification)oCallback;
 
 /*!
  @method
  
+ @abstract
+ Initializes an instance of the API.
+ 
  @discussion
- Shared instance of PushBots automatically created by the library.
+ Initializes an instance of the PushBots.
+ 
+ @param appId        Pushbots Application ID.
+ @param launchOptions   launchOptions
+ @param p      Push notification prompt on first app open.
+ @param rCallback    block to access notification data on received.
  */
-+ (Pushbots*)sharedInstance;
++ (id)initWithAppId:(NSString*)appId withLaunchOptions:(NSDictionary *)launchOptions prompt:(BOOL)p receivedNotification:(PushBotsReceivedNotification)rCallback;
 
+
++ (void)notificationReceived:(NSDictionary*)messageDict;
 /*!
  @method
  
@@ -75,7 +110,7 @@ typedef NS_ENUM(NSUInteger, PBLogLevel) {
  @discussion
 Show prompt to register with remote notifications.
  */
-- (void)registerForRemoteNotifications;
++ (void)registerForRemoteNotifications;
 
 
 /*!
@@ -89,7 +124,7 @@ Show prompt to register with remote notifications.
  
  @param deviceToken           Device token from Apple servers.
  */
-- (void) registerOnPushbots:(NSData *)deviceToken;
++ (void) registerOnPushbots:(NSData *)deviceToken;
 
 /*!
  @method
@@ -102,7 +137,7 @@ Show prompt to register with remote notifications.
  
  @param callback         callback block to get device data as NSDictionary
  */
-- (void) getDevice:(void (^)(NSDictionary *device, NSError *error))callback;
++ (void) getDevice:(void (^)(NSDictionary *device, NSError *error))callback;
 
 /*!
  @method
@@ -126,7 +161,7 @@ Update device data on Pushbots.
  
  @param deviceObject    NSDictionary with device data to be updated.
  */
-- (void) update:(NSDictionary *)deviceObject;
++ (void) update:(NSDictionary *)deviceObject;
 
 /*!
  @method
@@ -136,7 +171,7 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
  
  @param debug         Toggle debug mode for sandboxing.
  */
-- (void) debug:(BOOL)debug;
++ (void) debug:(BOOL)debug;
 
 /*!
  @method
@@ -146,7 +181,7 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
  
  @param alias         device alias.
  */
-- (void) setAlias:(NSString *)alias;
++ (void) setAlias:(NSString *)alias;
 
 
 /*!
@@ -156,7 +191,7 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
  This method will remove device alias from PushBots.
  
  */
-- (void) removeAlias;
++ (void) removeAlias;
 
 
 /*!
@@ -167,7 +202,7 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
  
  @param tags         Array of device tags to be added to the device.
  */
-- (void) tag:(NSArray *)tags;
++ (void) tag:(NSArray *)tags;
 
 /*!
  @method
@@ -177,7 +212,7 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
  
  @param tags         Array of device tags to be removed from the device.
  */
-- (void) untag:(NSArray *)tags;
++ (void) untag:(NSArray *)tags;
 
 /*!
  @method
@@ -187,7 +222,7 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
  
  @param number         New badge count.
  */
-- (void) setBadge: (int) number;
++ (void) setBadge: (int) number;
 
 /*!
  @method
@@ -197,7 +232,7 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
  
  @param number         badge count to add.
  */
-- (void) incrementBadgeCountBy: (int) number;
++ (void) incrementBadgeCountBy: (int) number;
 
 /*!
  @method
@@ -207,7 +242,7 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
  
  @param number         badge count to substract.
  */
-- (void) decrementBadgeCountBy: (int) number;
++ (void) decrementBadgeCountBy: (int) number;
 
 /*!
  @method
@@ -216,7 +251,7 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
  This method will Clear badge count on PushBots and in the app (applicationIconBadgeNumber).
  
  */
-- (void) clearBadgeCount;
++ (void) clearBadgeCount;
 
 + (void)openURL:(NSDictionary *)userInfo;
 
@@ -228,17 +263,18 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
  @param subscribed        badge count to substract.
 
  */
-- (void) toggleNotifications:(BOOL)subscribed;
++ (void) toggleNotifications:(BOOL)subscribed;
 
-/*!
- @method
- 
- @discussion
- This method will toggle Push notification subscription status.
- @param subscribed        badge count to substract.
- 
- */
-- (void) trackPushNotificationOpenedWithLaunchOptions:(NSDictionary *) launchOptions;
-- (void) trackPushNotificationOpenedWithPayload:(NSDictionary *) payload;
++ (void) trackPushNotificationOpenedWithLaunchOptions:(NSDictionary *) launchOptions;
++ (void) trackPushNotificationOpenedWithPayload:(NSDictionary *) payload;
++ (void) trackPushNotificationOpenedWithPoll:(NSDictionary *) payload andAnswerId:(NSString *)ansewerID sync:(BOOL) sync;
+
+#ifdef IOS10PLUS
+// iOS 10 only
+// Notification Service Extension
++ (UNMutableNotificationContent*)didReceiveNotificationExtensionRequest:(UNNotificationRequest*)request withContent:(UNMutableNotificationContent*)replacementContent;
++ (UNMutableNotificationContent*)serviceExtensionTimeWillExpireRequest:(UNNotificationRequest*)request withContent:(UNMutableNotificationContent*)replacementContent;
+#endif
+
 
 @end

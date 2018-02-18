@@ -1,0 +1,6 @@
+framework module Pushbots {
+  umbrella header "Pushbots.h"
+
+  export *
+  module * { export * }
+}

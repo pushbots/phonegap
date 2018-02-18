@@ -20,7 +20,9 @@ static char launchNotificationKey;
         self.callbackId = command.callbackId;
         dispatch_async(dispatch_get_main_queue(), ^{
             //Ask for Push permission && create Pushbots sharedInstance
-            self.PushbotsClient = [[Pushbots alloc] initWithAppId:appId prompt:YES];
+            [Pushbots initWithAppId:appId withLaunchOptions:nil prompt:true receivedNotification:nil openedNotification:^(NSDictionary *result) {
+                [self notificationOpened:result];
+            }];
         });
         
         CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -42,15 +44,7 @@ static char launchNotificationKey;
         NSString *token = [[[[deviceToken description] stringByReplacingOccurrencesOfString:@"<"withString:@""]
                             stringByReplacingOccurrencesOfString:@">" withString:@""]
                            stringByReplacingOccurrencesOfString: @" " withString: @""];
-        
-        
-        if(objectId == nil){
-            // Register the token on Pushbots
-            [self.PushbotsClient registerOnPushbots:deviceToken];
-        }else{
-            [self.PushbotsClient update:@{@"token" : token}];
-        }
-        
+
         
         // Send event of type "registered" with the token
         NSMutableDictionary* responseDict = [NSMutableDictionary dictionaryWithCapacity:2];
@@ -115,20 +109,12 @@ static char launchNotificationKey;
 }
 
 - (void)notificationOpened:(NSDictionary *)userInfo {
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        //Track opened notifications
-        [self.PushbotsClient trackPushNotificationOpenedWithPayload:userInfo];
-    });
-    
     NSLog(@"Notification opened");
     // Send event of type "opened" with the token
     NSMutableDictionary* responseDict = [NSMutableDictionary dictionaryWithCapacity:2];
     [responseDict setObject:@"opened" forKey:@"type"];
     [responseDict setObject:userInfo forKey:@"data"];
-    
     [self sendSuccessCallback:responseDict];
-    
 }
 
 - (void)sendSuccessCallback:(NSDictionary *)data {
@@ -147,7 +133,7 @@ static char launchNotificationKey;
         NSString* alias = [command.arguments objectAtIndex:0];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.PushbotsClient setAlias:alias];
+            [Pushbots setAlias:alias];
         });
         
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -161,7 +147,7 @@ static char launchNotificationKey;
         CDVPluginResult* pluginResult = nil;
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.PushbotsClient removeAlias];
+            [Pushbots removeAlias];
         });
         
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -175,7 +161,7 @@ static char launchNotificationKey;
         NSDictionary* update_obj = [command.arguments objectAtIndex:0];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.PushbotsClient update:update_obj];
+            [Pushbots update:update_obj];
         });
         
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -189,7 +175,7 @@ static char launchNotificationKey;
         NSString* tag = [command.arguments objectAtIndex:0];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.PushbotsClient tag:@[tag]];
+            [Pushbots tag:@[tag]];
         });
         
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -203,7 +189,7 @@ static char launchNotificationKey;
         NSArray* tags = [command.arguments objectAtIndex:0];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.PushbotsClient update:@{@"tags_add" : tags}];
+            [Pushbots update:@{@"tags_add" : tags}];
         });
         
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -217,7 +203,7 @@ static char launchNotificationKey;
         NSArray* tags = [command.arguments objectAtIndex:0];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.PushbotsClient update:@{@"tags_remove" : tags}];
+            [Pushbots update:@{@"tags_remove" : tags}];
         });
         
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -232,7 +218,7 @@ static char launchNotificationKey;
         NSString* tag = [command.arguments objectAtIndex:0];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.PushbotsClient untag:@[tag]];
+            [Pushbots untag:@[tag]];
         });
         
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -246,7 +232,7 @@ static char launchNotificationKey;
         BOOL debug = [[command.arguments objectAtIndex:0]  isEqual:[NSNumber numberWithInt:1]];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.PushbotsClient debug:debug];
+            [Pushbots debug:debug];
         });
         
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -260,7 +246,7 @@ static char launchNotificationKey;
         BOOL notifications_sub = [[command.arguments objectAtIndex:0]  isEqual:[NSNumber numberWithInt:1]];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.PushbotsClient toggleNotifications:notifications_sub];
+            [Pushbots toggleNotifications:notifications_sub];
         });
         
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -273,7 +259,7 @@ static char launchNotificationKey;
         CDVPluginResult* pluginResult = nil;
         //Unsubscribe the user
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.PushbotsClient toggleNotifications:false];
+            [Pushbots toggleNotifications:false];
         });
         
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -300,7 +286,7 @@ static char launchNotificationKey;
         CDVPluginResult* pluginResult = nil;
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.PushbotsClient clearBadgeCount];
+            [Pushbots clearBadgeCount];
         });
         
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -315,7 +301,7 @@ static char launchNotificationKey;
         int badge = [count intValue];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.PushbotsClient setBadge:badge];
+            [Pushbots setBadge:badge];
         });
         
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -331,7 +317,7 @@ static char launchNotificationKey;
         int badge = [count intValue];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.PushbotsClient incrementBadgeCountBy:badge];
+            [Pushbots incrementBadgeCountBy:badge];
         });
         
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -346,7 +332,7 @@ static char launchNotificationKey;
         int badge = [count intValue];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.PushbotsClient decrementBadgeCountBy:badge];
+            [Pushbots decrementBadgeCountBy:badge];
         });
         
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
