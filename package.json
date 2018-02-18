@@ -1,6 +1,6 @@
 {
   "name": "pushbots-cordova-plugin",
-  "version": "1.4.9",
+  "version": "1.5.0",
   "description": "PushBots plugin for phonegap/Cordova.",
   "cordova": {
     "id": "pushbots-cordova-plugin",
@@ -33,7 +33,7 @@
   "engines": [
     {
       "name": "cordova",
-      "version": ">=3.6.3"
+	  "version": ">=6.4.0"
     },
     {
       "name": "cordova-android",
@@ -41,15 +41,15 @@
     },
     {
       "name": "cordova-ios",
-      "version": ">=4.1.0"
+	  "version": ">=4.3.0"
     },
     {
       "name": "apple-ios",
-      "version": ">=7.0.0"
+      "version": ">=8.0.0"
     },
     {
       "name": "apple-xcode",
-      "version": ">=7.0.0"
+      "version": ">=8.0.0"
     }
   ],
   "author": "Pushbots",
