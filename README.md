@@ -7,10 +7,10 @@ https://www.pushbots.help/install-pushbots-in-your-app-or-website/cordova-phoneg
 
 ## Installation
 
-This requires phonegap/cordova CLI 5.0+
+This requires phonegap/cordova CLI 7.0+
 
 ```bash
-cordova plugin add pushbots-cordova-plugin
+cordova plugin add pushbots-cordova-plugin --save
 ```
 
 ##Usage
@@ -66,7 +66,7 @@ window.plugins.PushbotsPlugin.decrementBadgeCountBy(10);
  3. To handle Notification events:
 
 ```javascript
-// Should be called once app receive the notification only while the application is open or in background
+// Should be called once app receive the notification [foreground/background]
 window.plugins.PushbotsPlugin.on("notification:received", function(data){
 	console.log("received:" + JSON.stringify(data));
 	
@@ -77,7 +77,6 @@ window.plugins.PushbotsPlugin.on("notification:received", function(data){
 	window.plugins.PushbotsPlugin.done(data.pb_n_id);
 });
 
-// Should be called once the notification is clicked from foreground or background
 window.plugins.PushbotsPlugin.on("notification:clicked", function(data){
 	// var userToken = data.token; 
        // var userId = data.userId;
@@ -91,8 +90,8 @@ window.plugins.PushbotsPlugin.on("notification:clicked", function(data){
 add Pushbots plugin to config.xml:
 
 ```xml
-<gap:plugin name="pushbots-cordova-plugin" spec="^1.4.8" source="npm" />
-<preference name="phonegap-version" value="cli-6.3.0" />
+<gap:plugin name="pushbots-cordova-plugin" spec="1.4.9" source="npm" />
+<preference name="android-minSdkVersion" value="15" />
 <preference name="android-build-tool" value="gradle" />
 
  ```
