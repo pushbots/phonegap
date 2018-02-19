@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 import android.content.SharedPreferences;
-import com.pushbots.push.utils.PBPrefs;
 
 
 public class PushbotsPlugin extends CordovaPlugin {

@@ -1,0 +1,17 @@
+android.defaultConfig {
+   manifestPlaceholders = [pushbots_app_id: "PUSHBOTS_APP_ID",
+						google_sender_id: "GCM_SENDER_ID",
+						pushbots_loglevel:"DEBUG"]
+}
+
+repositories {
+    jcenter()
+    maven {
+        url "https://maven.google.com"
+    }
+}
+
+dependencies {
+	compile 'com.android.support:support-v4:[27.0.2,)'
+	compile 'com.google.android.gms:play-services-gcm:[11.8.0,)'
+}
