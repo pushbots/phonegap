@@ -12,6 +12,19 @@ repositories {
 }
 
 dependencies {
-	compile 'com.android.support:support-v4:[27.0.2,)'
+	compile 'com.android.support:support-v4:[27.+,)'
 	compile 'com.google.android.gms:play-services-gcm:[11.8.0,)'
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        if (details.getRequested().getGroup() == 'com.android.support') {
+            if (android.compileSdkVersion.split('-')[1].toInteger() >= 27)
+                details.useVersion('27.+')
+            else if (android.compileSdkVersion.split('-')[1].toInteger() == 26)
+                details.useVersion('26.+')
+            else
+                details.useVersion('25.+')
+        }
+    }
 }
