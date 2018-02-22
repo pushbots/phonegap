@@ -92,6 +92,7 @@ add Pushbots plugin to config.xml:
 ```xml
 <gap:plugin name="pushbots-cordova-plugin" spec="1.5.3" source="npm" />
 <preference name="android-minSdkVersion" value="15" />
+<preference name="phonegap-version" value="cli-7.0.1" />
 <preference name="android-build-tool" value="gradle" />
 
  ```
