@@ -90,7 +90,7 @@ window.plugins.PushbotsPlugin.on("notification:clicked", function(data){
 add Pushbots plugin to config.xml:
 
 ```xml
-<gap:plugin name="pushbots-cordova-plugin" spec="1.5.2" source="npm" />
+<gap:plugin name="pushbots-cordova-plugin" spec="1.5.3" source="npm" />
 <preference name="android-minSdkVersion" value="15" />
 <preference name="android-build-tool" value="gradle" />
 
