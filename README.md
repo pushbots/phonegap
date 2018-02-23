@@ -13,7 +13,7 @@ This requires phonegap/cordova CLI 7.0+
 cordova plugin add pushbots-cordova-plugin --save
 ```
 
-##Usage
+## Usage
 
 1. Intialize Pushbots in deviceReady section:
 ```javascript
@@ -85,12 +85,12 @@ window.plugins.PushbotsPlugin.on("notification:clicked", function(data){
  ```
  
 
-##Phonegap build
+## Phonegap build
 
 add Pushbots plugin to config.xml:
 
 ```xml
-<gap:plugin name="pushbots-cordova-plugin" spec="^1.5.6" source="npm" />
+<gap:plugin name="pushbots-cordova-plugin" spec="1.5.x" source="npm" />
 <preference name="android-minSdkVersion" value="15" />
 <preference name="phonegap-version" value="cli-7.0.1" />
 <preference name="android-build-tool" value="gradle" />
