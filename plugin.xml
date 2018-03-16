@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="pushbots-cordova-plugin"
-    version="1.5.7">
+    version="1.5.8">
 
 	<name>Pushbots</name>
 
@@ -58,7 +58,7 @@
 		<source-file src="src/android/com/pushbots/plugin/PushbotsPlugin.java" target-dir="src/com/pushbots/plugin" />
         <source-file src="src/android/com/pushbots/plugin/PushHandler.java" target-dir="src/com/pushbots/plugin" />
 
-		<framework src="com.pushbots:pushbots-lib:3.1.1-c@aar" />
+		<framework src="com.pushbots:pushbots-lib:3.1.2-c@aar" />
   	   	<framework src="src/android/build-extras.gradle" custom="true" type="gradleReference" />
 	</platform>
 
