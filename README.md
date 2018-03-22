@@ -7,7 +7,7 @@ https://www.pushbots.help/install-pushbots-in-your-app-or-website/cordova-phoneg
 
 ## Installation
 
-This requires phonegap/cordova CLI 7.0+
+This requires phonegap/cordova CLI 7.0.1+
 
 ```bash
 cordova plugin add pushbots-cordova-plugin --save

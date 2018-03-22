@@ -12,8 +12,8 @@ repositories {
 }
 
 dependencies {
-	compile 'com.android.support:support-v4:[27.+,)'
-	compile 'com.google.android.gms:play-services-gcm:[11.8.0,)'
+	compile 'com.android.support:support-v4:26.1.+'
+	compile 'com.google.android.gms:play-services-gcm:11.8.0'
 }
 
 configurations.all {

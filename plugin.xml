@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="pushbots-cordova-plugin"
-    version="1.5.8">
+    version="1.5.9">
 
 	<name>Pushbots</name>
 
@@ -14,6 +14,109 @@
 	<author>Abdullah Diaa</author>
 
     <license>Apache 2.0</license>
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="pushbots-cordova-plugin"
+    version="1.5.9">
+
+	<name>Pushbots</name>
+
+	<description>PushBots plugin for phonegap.</description>
+
+    <repo>https://github.com/pushbots/phonegap</repo>
+    <issue>https://github.com/pushbots/phonegap/issues</issue>
+
+	<author>Abdullah Diaa</author>
+
+    <license>Apache 2.0</license>
+
+	<keywords>push, notifications, pushnotifications, apns, GCM, C2DM, Android push notifications,Push Bots, PushBots, phonegap</keywords>
+
+	<engines>
+		<engine name="cordova" version=">=7.0.0"/>
+		<engine name="cordova-android" version=">=5.2.0"/>
+		<engine name="cordova-ios" version=">=4.4.0"/>
+		<engine name="apple-ios" version=">=7.0.0" />
+		<engine name="apple-xcode" version=">=8.0.0" />
+	</engines>
+  
+
+     <!-- JavaScript interface -->
+     <js-module src="www/pushbots.js"
+                name="PushbotsPlugin"
+                target="www/pushbots.js">
+         <clobbers target="PushbotsPlugin" />
+     </js-module>
+
+	<!-- android -->
+	<platform name="android">
+
+        <info>
+             In order to run this plugin, you need to Create application on Pushbots.
+             Visit https://www.pushbots.help/install-pushbots-in-your-app-or-website/cordova-phonegap-and-phonegap-build/integrating-pushbots-in-your-cordovaphonegap-app
+        </info>
+
+		<config-file target="res/xml/config.xml" parent="/widget">
+			<feature name="PushbotsPlugin">
+				<param name="android-package" value="com.pushbots.plugin.PushbotsPlugin"/>
+			</feature>
+		</config-file>
+		
+		<config-file target="AndroidManifest.xml" parent="/manifest">		
+			<uses-permission android:name="android.permission.VIBRATE" />
+		</config-file>
+		
+		<config-file target="AndroidManifest.xml" parent="/manifest/application">
+			<receiver android:name="com.pushbots.plugin.PushHandler" />
+		</config-file>
+		
+		<source-file src="src/android/com/pushbots/plugin/PushbotsPlugin.java" target-dir="src/com/pushbots/plugin" />
+        <source-file src="src/android/com/pushbots/plugin/PushHandler.java" target-dir="src/com/pushbots/plugin" />
+
+		<framework src="com.pushbots:pushbots-lib:3.1.2-c@aar" />
+  	   	<framework src="src/android/build-extras.gradle" custom="true" type="gradleReference" />
+	</platform>
+
+    <!-- iPhone -->
+   <platform name="ios">
+
+	   <config-file target="config.xml" parent="/*">
+		   <feature name="PushbotsPlugin">
+			   <param name="ios-package" value="PushbotsPlugin" />
+		   </feature>
+	   </config-file>
+
+	   <config-file target="*-Info.plist" parent="UIBackgroundModes">
+		   <array>
+			   <string>remote-notification</string>
+		   </array>
+	   </config-file>
+
+       <config-file parent="aps-environment" target="*/Entitlements-Debug.plist">
+           <string>development</string>
+       </config-file>
+
+       <config-file parent="aps-environment" target="*/Entitlements-Release.plist">
+           <string>production</string>
+       </config-file>
+
+       <info>
+            In order to run this plugin, you need to Create application on Pushbots.
+            Visit https://www.pushbots.help/install-pushbots-in-your-app-or-website/cordova-phonegap-and-phonegap-build/integrating-pushbots-in-your-cordovaphonegap-app
+       </info>
+
+       <header-file src="src/ios/PushbotsPlugin.h" />
+       <source-file src="src/ios/PushbotsPlugin.m" />
+
+	   <framework src="SystemConfiguration.framework" />
+	   <framework src="CoreTelephony.framework" />
+	   
+	   <framework src="src/ios/libs/Pushbots.framework" custom="true" />
+
+   </platform>
+
+</plugin>
 
 	<keywords>push, notifications, pushnotifications, apns, GCM, C2DM, Android push notifications,Push Bots, PushBots, phonegap</keywords>
 
