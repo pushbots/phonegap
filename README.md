@@ -47,6 +47,9 @@ window.plugins.PushbotsPlugin.removeTags(["tag1"]);
 
 window.plugins.PushbotsPlugin.debug(true);
 
+//Track event
+window.plugins.PushbotsPlugin.trackEvent("added_to_cart");
+
 //unsubscribe user from receiving notifications
 window.plugins.PushbotsPlugin.toggleNotifications(false);
 
