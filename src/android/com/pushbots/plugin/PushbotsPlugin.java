@@ -122,6 +122,10 @@ public class PushbotsPlugin extends CordovaPlugin {
 		}else if("removeAlias".equals(action)){
 			Pushbots.sharedInstance().removeAlias();
 			noResult();
+		}else if("trackEvent".equals(action)){
+			final String event_key = args.getString(0);
+			Pushbots.sharedInstance().trackEvent(event_key);
+			noResult();	
 		}else if("tag".equals(action)){
 			final String tag = args.getString(0);
 			final JSONArray tags = new JSONArray();

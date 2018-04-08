@@ -11,7 +11,7 @@
 
 /*!
  @class
- PushBots SDK v2.1.1
+ PushBots SDK v2.1.2
  @abstract
  The primary interface for integrating PushBots with your app.
  
@@ -35,7 +35,7 @@
 typedef NS_ENUM(NSUInteger, PBLogLevel) {
     PBLogLevelNoLogging, PBLogLevelError, PBLogLevelWarn, PBLogLevelInfo, PBLogLevelVerbose
 };
-
++ (NSDictionary*) currentlyShowingNotification;
 + (NSString*)applicationId;
 + (NSString*)deviceId;
 + (BOOL) prompt;
@@ -269,12 +269,17 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
 + (void) trackPushNotificationOpenedWithPayload:(NSDictionary *) payload;
 + (void) trackPushNotificationOpenedWithPoll:(NSDictionary *) payload andAnswerId:(NSString *)ansewerID sync:(BOOL) sync;
 
++(void) trackEvent:(NSString *)event;
++(void) trackEvent:(NSString *)event withValue:(NSString *)value;
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunguarded-availability"
 #ifdef IOS10PLUS
 // iOS 10 only
 // Notification Service Extension
 + (UNMutableNotificationContent*)didReceiveNotificationExtensionRequest:(UNNotificationRequest*)request withContent:(UNMutableNotificationContent*)replacementContent;
 + (UNMutableNotificationContent*)serviceExtensionTimeWillExpireRequest:(UNNotificationRequest*)request withContent:(UNMutableNotificationContent*)replacementContent;
 #endif
-
+#pragma clang diagnostic pop
 
 @end

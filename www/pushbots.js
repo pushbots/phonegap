@@ -153,6 +153,15 @@ PushbotsPlugin.prototype.tag = function(tag){
 
 
 /**
+* Track Event
+*
+* @param {string} event_key
+*/
+PushbotsPlugin.prototype.trackEvent = function(event_key){
+	exec(undefined, undefined, SERVICE_TITLE, 'trackEvent', [event_key]);
+};
+
+/**
 * Add multiple tags to the device on Pushbots
 *
 * @param {string} tag
