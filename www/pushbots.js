@@ -57,6 +57,8 @@ PushbotsPlugin.prototype.initialize = function(app_id, options) {
 			if(data.type === "registered"){
 				that.fire("registered", data.data.deviceToken);
 			// Received Notification
+			}else if(data.type === "user"){
+				that.fire("user:ids", data.data);
 			}else if(data.type === "received"){
 				if(data.source != undefined){
 					data.data.cordova_source = data.source ;
@@ -66,8 +68,6 @@ PushbotsPlugin.prototype.initialize = function(app_id, options) {
 			}else if(data.type === "opened"){
 				that.fire("notification:clicked", data.data);
 			// User info
-			}else if(data.type === "user"){
-				that.fire("user:ids", data.data);
 			}
 		}else{
 			console.log(data);

@@ -11,7 +11,7 @@
 
 /*!
  @class
- PushBots SDK v2.1.2
+ PushBots SDK v2.3.1
  @abstract
  The primary interface for integrating PushBots with your app.
  
@@ -43,6 +43,11 @@ typedef NS_ENUM(NSUInteger, PBLogLevel) {
 
 typedef void (^PushBotsReceivedNotification)(NSDictionary * result);
 typedef void (^PushBotsOpenedNotification)(NSDictionary * result);
+typedef void (^PushBotsRegistered)(NSString * userid);
+
++ (void) onRegistered:(PushBotsRegistered)rCallback;
+
+
 /*!
  @method
  
@@ -138,6 +143,8 @@ Show prompt to register with remote notifications.
  @param callback         callback block to get device data as NSDictionary
  */
 + (void) getDevice:(void (^)(NSDictionary *device, NSError *error))callback;
++ (void) checkInApp:(void (^)(NSArray *inappmessages, NSError *error))callback;
++(void) inAppNotificationOpenedWithId:(NSString *) inapp_id;
 
 /*!
  @method
@@ -264,6 +271,9 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
 
  */
 + (void) toggleNotifications:(BOOL)subscribed;
++ (BOOL)showTakeoverNotificationWithObject:(NSDictionary *) notification;
++ (void)showTakeoverNotificationWith:(NSDictionary *) notification;
++ (BOOL) validateInAppMessage:(NSDictionary *) message;
 
 + (void) trackPushNotificationOpenedWithLaunchOptions:(NSDictionary *) launchOptions;
 + (void) trackPushNotificationOpenedWithPayload:(NSDictionary *) payload;
