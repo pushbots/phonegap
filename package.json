@@ -1,6 +1,6 @@
 {
   "name": "pushbots-cordova-plugin",
-  "version": "1.6.0",
+  "version": "1.6.2",
   "description": "PushBots plugin for phonegap/Cordova.",
   "cordova": {
     "id": "pushbots-cordova-plugin",
