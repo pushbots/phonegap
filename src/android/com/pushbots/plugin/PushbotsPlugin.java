@@ -119,6 +119,30 @@ public class PushbotsPlugin extends CordovaPlugin {
 			final String alias = args.getString(0);
 			Pushbots.sharedInstance().setAlias(alias);
 			noResult();
+		}else if("setName".equals(action)){
+			final String name = args.getString(0);
+			Pushbots.sharedInstance().setName(name);
+			noResult();
+		}else if("setFirstName".equals(action)){
+			final String f_name = args.getString(0);
+			Pushbots.sharedInstance().setFirstName(f_name);
+			noResult();
+		}else if("setLastName".equals(action)){
+			final String l_name = args.getString(0);
+			Pushbots.sharedInstance().setLastName(l_name);
+			noResult();
+		}else if("setEmail".equals(action)){
+			final String email = args.getString(0);
+			Pushbots.sharedInstance().setEmail(email);
+			noResult();
+		}else if("setGender".equals(action)){
+			final String gender = args.getString(0);
+			Pushbots.sharedInstance().setGender(gender);
+			noResult();
+		}else if("setPhone".equals(action)){
+			final String phone = args.getString(0);
+			Pushbots.sharedInstance().setEmail(phone);
+			noResult();
 		}else if("removeAlias".equals(action)){
 			Pushbots.sharedInstance().removeAlias();
 			noResult();

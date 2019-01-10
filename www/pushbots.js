@@ -133,6 +133,67 @@ PushbotsPlugin.prototype.updateAlias = PushbotsPlugin.prototype.setAlias =  func
 };
 
 /**
+* Update name of the device on Pushbots
+*
+* @param {string} name
+*/
+PushbotsPlugin.prototype.setName =  function(name){
+	exec(undefined, undefined, SERVICE_TITLE, 'setName', [name]);
+};
+
+
+/**
+* Update first name of the device on Pushbots
+*
+* @param {string} f_name
+*/
+PushbotsPlugin.prototype.setFirstName =  function(f_name){
+	exec(undefined, undefined, SERVICE_TITLE, 'setFirstName', [f_name]);
+};
+
+
+/**
+* Update last name of the device on Pushbots
+*
+* @param {string} l_name
+*/
+PushbotsPlugin.prototype.setLastName =  function(l_name){
+	exec(undefined, undefined, SERVICE_TITLE, 'setLastName', [l_name]);
+};
+
+
+
+/**
+* Update email of the device on Pushbots
+*
+* @param {string} email
+*/
+PushbotsPlugin.prototype.setEmail =  function(email){
+	exec(undefined, undefined, SERVICE_TITLE, 'setEmail', [email]);
+};
+
+
+/**
+* Update gender of the device on Pushbots
+*
+* @param {string} gender
+*/
+PushbotsPlugin.prototype.setGender =  function(gender){
+	exec(undefined, undefined, SERVICE_TITLE, 'setGender', [gender]);
+};
+
+
+/**
+* Update phone of the device on Pushbots
+*
+* @param {string} phone
+*/
+PushbotsPlugin.prototype.setPhone =  function(phone){
+	exec(undefined, undefined, SERVICE_TITLE, 'setPhone', [phone]);
+};
+
+
+/**
 * Remove Alias of the device on Pushbots
 *
 * @param {string} alias
