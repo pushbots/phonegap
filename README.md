@@ -85,6 +85,14 @@ window.plugins.PushbotsPlugin.on("notification:clicked", function(data){
        // var userId = data.userId;
   	console.log("clicked:" + JSON.stringify(data));
 });
+
+window.plugins.PushbotsPlugin.setName("name");
+window.plugins.PushbotsPlugin.setFirstName("first name");
+window.plugins.PushbotsPlugin.setLastName("last name");
+window.plugins.PushbotsPlugin.setEmail("email");
+window.plugins.PushbotsPlugin.setGender("M");
+window.plugins.PushbotsPlugin.setPhone("+2100");
+
  ```
  
 

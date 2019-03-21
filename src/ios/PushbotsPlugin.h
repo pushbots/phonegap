@@ -25,6 +25,14 @@
 - (void) setTags:(CDVInvokedUrlCommand *)command;
 - (void) removeTags:(CDVInvokedUrlCommand *)command;
 
+//Custom attributes [Personlized push notifications and user profile]
+- (void) setPhone:(CDVInvokedUrlCommand *)command;
+- (void) setGender:(CDVInvokedUrlCommand *)command;
+- (void) setEmail:(CDVInvokedUrlCommand *)command;
+- (void) setLastName:(CDVInvokedUrlCommand *)command;
+- (void) setFirstName:(CDVInvokedUrlCommand *)command;
+- (void) setName:(CDVInvokedUrlCommand *)command;
+
 - (void) trackEvent:(CDVInvokedUrlCommand*)command;
 
 - (void) toggleNotifications:(CDVInvokedUrlCommand *)command;

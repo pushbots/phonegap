@@ -226,6 +226,98 @@ static char launchNotificationKey;
 }
 
 
+//Set name
+- (void) setName:(CDVInvokedUrlCommand *)command {
+    [self.commandDelegate runInBackground:^{
+        CDVPluginResult* pluginResult = nil;
+        NSString* name = [command.arguments objectAtIndex:0];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [Pushbots setName:name];
+        });
+        
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
+//Set first name 
+- (void) setFirstName:(CDVInvokedUrlCommand *)command {
+    [self.commandDelegate runInBackground:^{
+        CDVPluginResult* pluginResult = nil;
+        NSString* f_name = [command.arguments objectAtIndex:0];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [Pushbots setFirstName:f_name];
+        });
+        
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
+//Set last name 
+- (void) setLastName:(CDVInvokedUrlCommand *)command {
+    [self.commandDelegate runInBackground:^{
+        CDVPluginResult* pluginResult = nil;
+        NSString* l_name = [command.arguments objectAtIndex:0];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [Pushbots setLastName:l_name];
+        });
+        
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
+//Set email
+- (void) setEmail:(CDVInvokedUrlCommand *)command {
+    [self.commandDelegate runInBackground:^{
+        CDVPluginResult* pluginResult = nil;
+        NSString* email = [command.arguments objectAtIndex:0];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [Pushbots setEmail:email];
+        });
+        
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
+
+//Set gender
+- (void) setGender:(CDVInvokedUrlCommand *)command {
+    [self.commandDelegate runInBackground:^{
+        CDVPluginResult* pluginResult = nil;
+        NSString* gender = [command.arguments objectAtIndex:0];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [Pushbots setGender:gender];
+        });
+        
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
+//Set phone
+- (void) setPhone:(CDVInvokedUrlCommand *)command {
+    [self.commandDelegate runInBackground:^{
+        CDVPluginResult* pluginResult = nil;
+        NSString* phone = [command.arguments objectAtIndex:0];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [Pushbots setPhone:phone];
+        });
+        
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
+
 - (void) untag:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         CDVPluginResult* pluginResult = nil;

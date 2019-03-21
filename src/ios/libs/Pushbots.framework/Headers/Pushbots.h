@@ -11,7 +11,7 @@
 
 /*!
  @class
- PushBots SDK v2.3.1
+ PushBots SDK v2.4.1
  @abstract
  The primary interface for integrating PushBots with your app.
  
@@ -189,6 +189,14 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
  @param alias         device alias.
  */
 + (void) setAlias:(NSString *)alias;
+
++ (void) setName:(NSString *)name;
++ (void) setFirstName:(NSString *)f_name;
++ (void) setLastName:(NSString *)l_name;
++ (void) setEmail:(NSString *)email;
++ (void) setGender:(NSString *)gender;
++ (void) setPhone:(NSString *)phone;
+
 
 
 /*!
