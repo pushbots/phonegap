@@ -26,8 +26,5 @@ configurations.all {
             else
                 details.useVersion('25.+')
         }
-        if (details.getRequested().getGroup() == 'com.google.android.gms') {
-          details.useVersion '12.0.1'
-        }
     }
 }
