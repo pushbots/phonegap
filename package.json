@@ -1,6 +1,6 @@
 {
   "name": "pushbots-cordova-plugin",
-  "version": "1.6.7",
+  "version": "1.6.8",
   "description": "PushBots plugin for phonegap/Cordova.",
   "cordova": {
     "id": "pushbots-cordova-plugin",
@@ -19,6 +19,7 @@
     "pushnotifications",
     "free push notifications",
     "GCM",
+    "FCM",
     "C2DM",
     "Android push notifications",
     "helium",

@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="pushbots-cordova-plugin"
-    version="1.6.7">
+    version="1.6.8">
 
 	<name>Pushbots</name>
 
@@ -15,7 +15,7 @@
 
     <license>Apache 2.0</license>
 	
-	<keywords>push, notifications, pushnotifications, apns, GCM, C2DM, Android push notifications,Push Bots, PushBots, phonegap</keywords>
+	<keywords>push, notifications, pushnotifications, apns, GCM, FCM, C2DM, Android push notifications,Push Bots, PushBots, phonegap</keywords>
 
 	<engines>
 		<engine name="cordova" version=">=7.0.0"/>
@@ -57,7 +57,7 @@
 		<source-file src="src/android/com/pushbots/plugin/PushbotsPlugin.java" target-dir="src/com/pushbots/plugin" />
         <source-file src="src/android/com/pushbots/plugin/PushHandler.java" target-dir="src/com/pushbots/plugin" />
 
-		<framework src="com.pushbots:pushbots-lib:3.2.7-c@aar" />
+		<framework src="com.pushbots:pushbots-lib:3.2.8-c@aar" />
   	   	<framework src="src/android/build-extras.gradle" custom="true" type="gradleReference" />
 	</platform>
 
