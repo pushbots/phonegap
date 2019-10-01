@@ -11,7 +11,7 @@
 
 /*!
  @class
- PushBots SDK v2.4.1
+ PushBots SDK v2.4.4
  @abstract
  The primary interface for integrating PushBots with your app.
  
