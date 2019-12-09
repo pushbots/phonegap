@@ -96,7 +96,7 @@ window.plugins.PushbotsPlugin.setPhone("+2100");
  ```
  
 
-## Phonegap build
+## Phonegap build (Only add in phonegap-build)
 
 add Pushbots plugin to config.xml:
 
