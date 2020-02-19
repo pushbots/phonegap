@@ -7,7 +7,7 @@ https://www.pushbots.help/install-pushbots-in-your-app-or-website/cordova-phoneg
 
 ## Installation
 
-This requires phonegap/cordova CLI 8.0.0+
+This requires phonegap/cordova CLI 9.0.0+ for phonegap build
 
 ```bash
 cordova plugin add pushbots-cordova-plugin --save
@@ -101,9 +101,9 @@ window.plugins.PushbotsPlugin.setPhone("+2100");
 add Pushbots plugin to config.xml:
 
 ```xml
-<gap:plugin name="pushbots-cordova-plugin" spec="1.6.x" source="npm" />
+<gap:plugin name="pushbots-cordova-plugin" spec="1.6.14" source="npm" />
 <preference name="android-minSdkVersion" value="19" />
-<preference name="phonegap-version" value="cli-8.1.1" />
+<preference name="phonegap-version" value="cli-9.0.0" />
 <preference name="android-build-tool" value="gradle" />
 
  ```
