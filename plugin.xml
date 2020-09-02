@@ -94,7 +94,8 @@
 
 	   <framework src="SystemConfiguration.framework" />
 	   <framework src="CoreTelephony.framework" />
-	   
+	   <framework src="CoreLocation.framework" />
+
 	   <framework src="src/ios/libs/Pushbots.framework" custom="true" />
 
    </platform>
