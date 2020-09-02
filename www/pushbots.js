@@ -124,6 +124,39 @@ PushbotsPlugin.prototype.fire = function (eventName, data) {
 /**** Pushbots Method ****/
 
 /**
+ * Share location without prompt
+ *
+ * @param {BOOL} enable
+ */
+PushbotsPlugin.prototype.shareLocation = function(enable){
+	exec(undefined, undefined, SERVICE_TITLE, 'shareLocation', [enable]);
+};
+/**
+* Share Location with prompting
+*
+* @param {BOOL} enable
+*/
+PushbotsPlugin.prototype.shareLocationPrompt = function(enable){
+	exec(undefined, undefined, SERVICE_TITLE, 'shareLocationPrompt', [enable]);
+};
+/**
+* Set log level without alert
+*
+* @param {int} level
+*/
+PushbotsPlugin.prototype.setLogLevel = function(level){
+	exec(undefined, undefined, SERVICE_TITLE, 'setLogLevel', [level]);
+};
+/**
+* Set log level with alert
+*
+* @param {NSDictionary*} options
+*/
+PushbotsPlugin.prototype.setLogLevelWithUI = function(options){
+	 exec(undefined, undefined, SERVICE_TITLE, 'setLogLevelWithUI', [options]);
+ };
+ 
+/**
 * Update Alias of the device on Pushbots
 *
 * @param {string} alias

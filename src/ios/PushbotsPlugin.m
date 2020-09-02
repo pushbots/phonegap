@@ -169,6 +169,57 @@ static char launchNotificationKey;
     }];
 }
 
+- (void)setLogLevelWithUI:(CDVInvokedUrlCommand *)command{
+    [self.commandDelegate runInBackground:^{
+        CDVPluginResult* pluginResult = nil;
+        NSDictionary* options = [command.arguments objectAtIndex:0];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            PBLogLevel pBLogLevel = (PBLogLevel) [options[@"logLevel"] intValue];
+            [Pushbots setLogLevel: pBLogLevel isUILog:[options[@"showAlert"] boolValue]];
+        });
+
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+- (void)setLogLevel:(CDVInvokedUrlCommand *)command{
+    [self.commandDelegate runInBackground:^{
+        CDVPluginResult* pluginResult = nil;
+        id level = [command.arguments objectAtIndex:0];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            PBLogLevel pBLogLevel = (PBLogLevel) [level intValue];
+            [Pushbots setLogLevel:pBLogLevel];
+        });
+
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+- (void)shareLocationPrompt:(CDVInvokedUrlCommand *)command{
+    [self.commandDelegate runInBackground:^{
+        CDVPluginResult* pluginResult = nil;
+        BOOL enable = [command.arguments objectAtIndex:0];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [Pushbots shareLocationPrompt:enable];
+        });
+
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+- (void)shareLocation:(CDVInvokedUrlCommand *)command{
+    [self.commandDelegate runInBackground:^{
+        CDVPluginResult* pluginResult = nil;
+        BOOL enable = [command.arguments objectAtIndex:0];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [Pushbots shareLocation:enable];
+        });
+
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
 - (void) tag:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         CDVPluginResult* pluginResult = nil;

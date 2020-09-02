@@ -96,9 +96,11 @@ window.plugins.PushbotsPlugin.setPhone("+2100");
  ```
  
 
-## Phonegap build (Only add in phonegap-build)
+## Phonegap build (Only add in phonegap-build) DEPRECARTED
 
-add Pushbots plugin to config.xml:
+https://blog.phonegap.com/update-for-customers-using-phonegap-and-phonegap-build-cc701c77502c
+
+add Pushbots plugin to config.xml, this is still using old version of phonegap build as it's deprecated by apache, check article above for more details:
 
 ```xml
 <gap:plugin name="pushbots-cordova-plugin" spec="1.6.14" source="npm" />

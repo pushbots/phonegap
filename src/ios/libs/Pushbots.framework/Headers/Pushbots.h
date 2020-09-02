@@ -11,7 +11,7 @@
 
 /*!
  @class
- PushBots SDK v2.4.5
+ PushBots SDK v2.5.0
  @abstract
  The primary interface for integrating PushBots with your app.
  
@@ -108,7 +108,7 @@ typedef void (^PushBotsRegistered)(NSString * userid);
  
  */
 + (void)setLogLevel:(PBLogLevel)pbloglevel;
-
++ (void)setLogLevel:(PBLogLevel)pbloglevel isUILog:(BOOL)uiLog;
 /*!
  @method
  
@@ -289,7 +289,8 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
 
 +(void) trackEvent:(NSString *)event;
 +(void) trackEvent:(NSString *)event withValue:(NSString *)value;
-
++(void) shareLocation:(BOOL)isSharingEnabled;
++(void) shareLocationPrompt:(BOOL)isPrompt;
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunguarded-availability"
 #ifdef IOS10PLUS
@@ -297,6 +298,7 @@ This method will toggle debug mode on the device, visit sandbox section in dashb
 // Notification Service Extension
 + (UNMutableNotificationContent*)didReceiveNotificationExtensionRequest:(UNNotificationRequest*)request withContent:(UNMutableNotificationContent*)replacementContent;
 + (UNMutableNotificationContent*)serviceExtensionTimeWillExpireRequest:(UNNotificationRequest*)request withContent:(UNMutableNotificationContent*)replacementContent;
+
 #endif
 #pragma clang diagnostic pop
 
