@@ -15,7 +15,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import com.pushbots.push.utils.PBConstants;
 import java.lang.reflect.Array;
 import java.util.Map;
 import java.util.Collection;
@@ -32,6 +31,8 @@ public class PushbotsPlugin extends CordovaPlugin {
 	private static CallbackContext _callbackContext;
 	private static CordovaWebView gWebView;
 	public static Activity mActivity;
+	private Pushbots.LOG_LEVEL currentLogCatlevel = Pushbots.LOG_LEVEL.NONE;
+	private Pushbots.LOG_LEVEL currentLogUilevel = Pushbots.LOG_LEVEL.NONE;
 
 	/**
 		* Gets the application context.
@@ -54,26 +55,14 @@ public class PushbotsPlugin extends CordovaPlugin {
 				options = args.getJSONObject(1).getJSONObject("android");
 				final String senderId = options.getString("sender_id");
 					
-				Pushbots.sharedInstance().init(cordova.getActivity(), "DEBUG", applicationId, senderId);
-				Pushbots.sharedInstance().setCustomHandler(PushHandler.class);
+				Pushbots.sharedInstance().init(getApplicationContext(), "DEBUG", applicationId, senderId);
+				// Pushbots.sharedInstance().setCustomHandler(PushHandler.class);
 				Log.v(TAG,"execute: options=" + options.toString());					
 				Pushbots.sharedInstance().registerForRemoteNotifications();
 						
 				Log.v(TAG,"registerForRemoteNotifications:" + senderId );
 						
-				if(null != cordova.getActivity().getIntent().getExtras()){
-					if(cordova.getActivity().getIntent().hasExtra(PBConstants.EVENT_MSG_OPEN)){
-						//Send opened event to cordova
-						try {
-							JSONObject json = new JSONObject(PushbotsPlugin.getJson(cordova.getActivity().getIntent().getExtras().getBundle(PBConstants.EVENT_MSG_OPEN)));
-							PushbotsPlugin.sendSuccessData("opened", json);
-							//Clean EVENT_MSG_OPEN bundle
-							cordova.getActivity().getIntent().removeExtra(PBConstants.EVENT_MSG_OPEN);
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-					}
-				}
+		
 				
 		        Pushbots.sharedInstance().idsCallback(new Pushbots.idHandler() {
 		            @Override
@@ -107,6 +96,38 @@ public class PushbotsPlugin extends CordovaPlugin {
 							} catch (JSONException e) {
 								e.printStackTrace();
 							}
+						}
+					}
+				});
+				Pushbots.sharedInstance().openedCallback(new Pushbots.notificationOpenedHandler() {
+					@Override
+					public void opened(Bundle notification) {
+						try {
+							sendSuccessData("opened", PushbotsPlugin.getJson(notification));
+						}catch(Exception e) {
+
+						}
+					}
+				});
+
+				Pushbots.sharedInstance().receivedCallback(new Pushbots.notificationReceivedHandler() {
+					@Override
+					public void received(Bundle notification) {
+						try {
+							sendSuccessData("received", PushbotsPlugin.getJson(notification));
+						}catch(Exception e) {
+
+						}
+					}
+				});
+
+				Pushbots.sharedInstance().notificationReceivedSilently(new Pushbots.NotificationReceivedSilently() {
+					@Override
+					public void received(Bundle notification) {
+						try {
+							sendSuccessData("receivedSilent", PushbotsPlugin.getJson(notification));
+						}catch(Exception e) {
+
 						}
 					}
 				});
@@ -158,7 +179,7 @@ public class PushbotsPlugin extends CordovaPlugin {
 			noResult();
 		}else if("update".equals(action)){
 			final JSONObject json = args.getJSONObject(0);			
-			Pushbots.sharedInstance().update(json);
+			Pushbots.update(json);
 			noResult();
 		}else if("setTags".equals(action)){
 			final JSONArray tags = args.getJSONArray(0);
@@ -185,16 +206,28 @@ public class PushbotsPlugin extends CordovaPlugin {
 		}else if("getRegistrationId".equals(action)){
 			String registrationID = Pushbots.sharedInstance().getGCMRegistrationId();
 			if(registrationID != null){
-				_callbackContext.success(registrationID);
+				sendStringResult(callbackContext, registrationID);
 			}else{
-				_callbackContext.error("null registration Id");
+				fail(callbackContext, "null registration Id");
 			}
 		}else if("isNotificationEnabled".equals(action)){
 			Boolean isNotificationEnabled = Pushbots.sharedInstance().isNotificationEnabled();
-			_callbackContext.success();
+			sendBooleanResult(isNotificationEnabled);
 		}else if("done".equals(action)){
 			return true;
-		}else {
+		} else if ("isInitialized".equals(action)) {
+			callbackContext.success(String.valueOf(Pushbots.isInitialized()));
+		} else if ("setLogLevel".equals(action)) {
+			Pushbots.setLogLevel(getLogLevel(args.getString(0)), getLogLevel(args.getString(1)));
+			noResult();
+		} else if ("shareLocation".equals(action)) {
+			Pushbots.shareLocation(args.getBoolean(0));
+			noResult();
+		} else if("isSharingLocation".equals(action)) {
+			callbackContext.success(String.valueOf(Pushbots.isSharingLocation()));
+		} else if ("isRegistered".equals(action)) {
+			callbackContext.success(String.valueOf(Pushbots.isRegistered()));
+		} else {
 			Log.e(TAG, "Invalid action : " + action);
 			callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
 			return false;
@@ -222,12 +255,23 @@ public class PushbotsPlugin extends CordovaPlugin {
 		}
 	}
 	
-	public static void fail(String message) {
+	public static void fail(CallbackContext callbackContext, String message) {
 		PluginResult result = new PluginResult(PluginResult.Status.ERROR, message);
+		result.setKeepCallback(true);
+		callbackContext.sendPluginResult(result);
+	}
+
+	public static void sendBooleanResult(boolean value) {
+		PluginResult result = new PluginResult(PluginResult.Status.OK, value);
 		result.setKeepCallback(true);
 		_callbackContext.sendPluginResult(result);
 	}
 
+	public static void sendStringResult(CallbackContext callbackContext, String value) {
+		PluginResult result = new PluginResult(PluginResult.Status.OK, value);
+		result.setKeepCallback(true);
+		callbackContext.sendPluginResult(result);
+	}
 	private static void noResult(){
 		PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
 		result.setKeepCallback(true);
@@ -248,6 +292,24 @@ public class PushbotsPlugin extends CordovaPlugin {
 			}
 		}
 		return jsonObject.toString();
+	}
+
+	private static Pushbots.LOG_LEVEL getLogLevel(String logLevel) {
+		if (logLevel.equals("DEBUG")){
+			return Pushbots.LOG_LEVEL.DEBUG;
+		}else if (logLevel.equals("VERBOSE")){
+			return Pushbots.LOG_LEVEL.VERBOSE;
+		}else if (logLevel.equals("INFO")) {
+			return Pushbots.LOG_LEVEL.INFO;
+		}else if (logLevel.equals("WARNING")) {
+			return Pushbots.LOG_LEVEL.WARNING;
+		}else if (logLevel.equals("ERROR")) {
+			return Pushbots.LOG_LEVEL.ERROR;
+		}else if (logLevel.equals("WTF")) {
+			return Pushbots.LOG_LEVEL.WTF;
+		}else {
+			return Pushbots.LOG_LEVEL.NONE;
+		}
 	}
 
 	private static Object wrap(Object o) {

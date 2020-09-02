@@ -64,8 +64,16 @@ PushbotsPlugin.prototype.initialize = function(app_id, options) {
 					data.data.cordova_source = data.source ;
 				}
 				that.fire("notification:received", data.data);
+				
+			} // Received Silently
+			else if(data.type === "receivedSilent"){
+					if(data.source != undefined){
+						data.data.cordova_source = data.source ;
+					}
+					that.fire("notification:receivedSilent", data.data);
+			}
 			// Opened Notification
-			}else if(data.type === "opened"){
+			else if(data.type === "opened"){
 				that.fire("notification:clicked", data.data);
 			// User info
 			}
@@ -122,40 +130,38 @@ PushbotsPlugin.prototype.fire = function (eventName, data) {
 
 
 /**** Pushbots Method ****/
-
 /**
  * Share location without prompt
  *
  * @param {BOOL} enable
  */
 PushbotsPlugin.prototype.shareLocation = function(enable){
-	exec(undefined, undefined, SERVICE_TITLE, 'shareLocation', [enable]);
-};
+     exec(undefined, undefined, SERVICE_TITLE, 'shareLocation', [enable]);
+ };
 /**
 * Share Location with prompting
 *
 * @param {BOOL} enable
 */
-PushbotsPlugin.prototype.shareLocationPrompt = function(enable){
-	exec(undefined, undefined, SERVICE_TITLE, 'shareLocationPrompt', [enable]);
-};
+ PushbotsPlugin.prototype.shareLocationPrompt = function(enable){
+     exec(undefined, undefined, SERVICE_TITLE, 'shareLocationPrompt', [enable]);
+ };
 /**
 * Set log level without alert
 *
 * @param {int} level
 */
-PushbotsPlugin.prototype.setLogLevel = function(level){
-	exec(undefined, undefined, SERVICE_TITLE, 'setLogLevel', [level]);
-};
-/**
-* Set log level with alert
-*
-* @param {NSDictionary*} options
-*/
-PushbotsPlugin.prototype.setLogLevelWithUI = function(options){
-	 exec(undefined, undefined, SERVICE_TITLE, 'setLogLevelWithUI', [options]);
+ PushbotsPlugin.prototype.setLogLevel = function(level){
+     exec(undefined, undefined, SERVICE_TITLE, 'setLogLevel', [level]);
  };
- 
+ /**
+ * Set log level with alert
+ *
+ * @param {NSDictionary*} options
+ */
+ PushbotsPlugin.prototype.setLogLevelWithUI = function(options){
+      exec(undefined, undefined, SERVICE_TITLE, 'setLogLevelWithUI', [options]);
+  };
 /**
 * Update Alias of the device on Pushbots
 *
@@ -379,6 +385,46 @@ PushbotsPlugin.prototype.toggleNotifications = function(notifications_sub){
 */
 PushbotsPlugin.prototype.getRegistrationId = function(success, fail){
 	exec(success, fail, SERVICE_TITLE, 'getRegistrationId', []);
+};
+
+/**
+ * Check if Pushbots is already initialized or not.
+ */
+PushbotsPlugin.prototype.isInitialized = function(callback){
+	exec(callback, undefined, SERVICE_TITLE, 'isInitialized', []);
+};
+
+/**
+ * Check if already sharing location or not.
+ */
+PushbotsPlugin.prototype.isSharingLocation = function(callback){
+	exec(callback, undefined, SERVICE_TITLE, "isSharingLocation", []);
+};
+
+/**
+ * Check if already registered for remote-notification or not.
+ */
+PushbotsPlugin.prototype.isRegistered = function(callback){
+	exec(callback, undefined, SERVICE_TITLE, "isRegistered", []);
+};
+
+/**
+ * Set log-level for logcat and UI i.e:- DEBUG, VERBOSE, INFO, ERROR, WTF, WARNNING, NONE
+ * 
+ * @param {logcatLevel} string indicate the logcat-level.
+ * @param {uiLeve} string indicate the ui-level. 
+ */
+PushbotsPlugin.prototype.setLogLevel = function(logcatLevel, uiLeve){
+	exec(undefined, undefined, SERVICE_TITLE, "setLogLevel", [logcatLevel, uiLeve]);
+};
+
+/**
+ * Share user location.
+ * 
+ * @param {isSharing} boolean indicate sharing location or not. 
+ */
+PushbotsPlugin.prototype.shareLocation = function(isSharing){
+	exec(undefined, undefined, SERVICE_TITLE, "shareLocation", [isSharing]);
 };
 
 /**

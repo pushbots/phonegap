@@ -41,11 +41,7 @@ static char launchNotificationKey;
     if (self.callbackId != nil) {
         NSString *objectId = [[NSUserDefaults standardUserDefaults] valueForKey:@"com.pushbots.api.object_id"];
         // Send the event
-        NSString *token = [[[[deviceToken description] stringByReplacingOccurrencesOfString:@"<"withString:@""]
-                            stringByReplacingOccurrencesOfString:@">" withString:@""]
-                           stringByReplacingOccurrencesOfString: @" " withString: @""];
-
-        
+        NSString *token =  [PushbotsPlugin stringFromDeviceToken: deviceToken];
         // Send event of type "registered" with the token
         NSMutableDictionary* responseDict = [NSMutableDictionary dictionaryWithCapacity:2];
         [responseDict setObject:@"registered" forKey:@"type"];
@@ -69,6 +65,18 @@ static char launchNotificationKey;
         }
         
     }
+}
++ (NSString *)stringFromDeviceToken:(NSData *)deviceToken {
+    NSUInteger length = deviceToken.length;
+    if (length == 0) {
+        return nil;
+    }
+    const unsigned char *buffer = deviceToken.bytes;
+    NSMutableString *hexString  = [NSMutableString stringWithCapacity:(length * 2)];
+    for (int i = 0; i < length; ++i) {
+        [hexString appendFormat:@"%02x", buffer[i]];
+    }
+    return [hexString copy];
 }
 
 - (void)registeredWithPushbots:(NSNotification *)notification {
@@ -95,9 +103,7 @@ static char launchNotificationKey;
         if ( [UIApplication sharedApplication].applicationState != UIApplicationStateActive ) {
             self.notificationPayload = userInfo;
         }
-        
-        [Pushbots openURL:userInfo];
-        
+                
         // Send event of type "received" with the token
         NSMutableDictionary* responseDict = [NSMutableDictionary dictionaryWithCapacity:2];
         [responseDict setObject:from forKey:@"source"];
@@ -168,7 +174,6 @@ static char launchNotificationKey;
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
 }
-
 - (void)setLogLevelWithUI:(CDVInvokedUrlCommand *)command{
     [self.commandDelegate runInBackground:^{
         CDVPluginResult* pluginResult = nil;
@@ -177,7 +182,7 @@ static char launchNotificationKey;
             PBLogLevel pBLogLevel = (PBLogLevel) [options[@"logLevel"] intValue];
             [Pushbots setLogLevel: pBLogLevel isUILog:[options[@"showAlert"] boolValue]];
         });
-
+        
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
@@ -190,7 +195,7 @@ static char launchNotificationKey;
             PBLogLevel pBLogLevel = (PBLogLevel) [level intValue];
             [Pushbots setLogLevel:pBLogLevel];
         });
-
+        
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
@@ -202,7 +207,7 @@ static char launchNotificationKey;
         dispatch_async(dispatch_get_main_queue(), ^{
             [Pushbots shareLocationPrompt:enable];
         });
-
+        
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
@@ -214,12 +219,11 @@ static char launchNotificationKey;
         dispatch_async(dispatch_get_main_queue(), ^{
             [Pushbots shareLocation:enable];
         });
-
+        
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
 }
-
 - (void) tag:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         CDVPluginResult* pluginResult = nil;
@@ -431,7 +435,7 @@ static char launchNotificationKey;
     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"com.pushbots.api.deviceID"];
     
     if (!token || [token isEqualToString:@""])
-    return;
+        return;
     
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:token];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];

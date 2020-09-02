@@ -19,12 +19,10 @@
 - (void) updateAlias:(CDVInvokedUrlCommand *)command;
 - (void) removeAlias:(CDVInvokedUrlCommand *)command;
 - (void) update:(CDVInvokedUrlCommand*)command;
-
 - (void) tag:(CDVInvokedUrlCommand*)command;
 - (void) untag:(CDVInvokedUrlCommand*)command;
 - (void) setTags:(CDVInvokedUrlCommand *)command;
 - (void) removeTags:(CDVInvokedUrlCommand *)command;
-
 //new features
 //  Set log levels
 - (void) setLogLevel:(CDVInvokedUrlCommand*)command;
@@ -32,7 +30,6 @@
 // share Location
 - (void) shareLocation:(CDVInvokedUrlCommand*)command;
 - (void) shareLocationPrompt:(CDVInvokedUrlCommand *)command;
-
 //Custom attributes [Personlized push notifications and user profile]
 - (void) setPhone:(CDVInvokedUrlCommand *)command;
 - (void) setGender:(CDVInvokedUrlCommand *)command;

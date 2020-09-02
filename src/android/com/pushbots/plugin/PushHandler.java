@@ -2,7 +2,6 @@ package com.pushbots.plugin;
 
 import android.content.BroadcastReceiver;
 import android.support.v4.app.NotificationManagerCompat;
-import com.pushbots.push.PBNotificationIntent;
 import com.pushbots.push.Pushbots;
 import com.pushbots.push.utils.PBConstants;
 import java.util.HashMap;
@@ -51,7 +50,7 @@ public class PushHandler extends BroadcastReceiver {
 			}
 			
 			//Record opened notification
-            Pushbots.PushNotificationOpened(context, bundle);
+            //PushUtils.PushNotificationOpened(context, bundle);
 			
 			//Start Launch Activity
 			String packageName = context.getPackageName();
@@ -101,7 +100,7 @@ public class PushHandler extends BroadcastReceiver {
 		}else if(action.startsWith(PBConstants.EVENT_POLL_OPEN)){
             String ButtonId = intent.getStringExtra("button_id");
             Log.d("PB3",  "buttonid: "+  ButtonId + " Poll: " +intent.getBundleExtra(PBConstants.EVENT_POLL_OPEN).getString("poll"));
-            Pushbots.PollClicked(context, intent.getBundleExtra(PBConstants.EVENT_POLL_OPEN), ButtonId);
+            //PushUtils.PollClicked(context, intent.getBundleExtra(PBConstants.EVENT_POLL_OPEN), ButtonId);
             NotificationManagerCompat.from(context).cancelAll();
         }
 	}

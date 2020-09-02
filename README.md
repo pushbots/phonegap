@@ -50,6 +50,16 @@ window.plugins.PushbotsPlugin.debug(true);
 //Track event
 window.plugins.PushbotsPlugin.trackEvent("added_to_cart");
 
+//ShareLocation with prompting
+window.plugins.PushbotsPlugin.shareLocationPrompt(true);
+//Sharelocation without prompting
+window.plugins.PushbotsPlugin.shareLocation(true);
+//Set log level with alert
+window.plugins.PushbotsPlugin.setLogLevelWithUI({"logLevel":3, "showAlert":true});
+//set log level without alert
+window.plugins.PushbotsPlugin.setLogLevel(3);
+
+
 //unsubscribe user from receiving notifications
 window.plugins.PushbotsPlugin.toggleNotifications(false);
 
