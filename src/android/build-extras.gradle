@@ -12,21 +12,6 @@ repositories {
 }
 
 dependencies {
-	implementation 'com.android.support:support-v4:26.1.+'
-	implementation 'com.google.firebase:firebase-messaging:17.6.0'
-    implementation 'com.google.android.gms:play-services-location:15.0.1'
-
-}
-
-configurations.all {
-    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        if (details.getRequested().getGroup() == 'com.android.support') {
-            if (android.compileSdkVersion.split('-')[1].toInteger() >= 27)
-                details.useVersion('27.+')
-            else if (android.compileSdkVersion.split('-')[1].toInteger() == 26)
-                details.useVersion('26.+')
-            else
-                details.useVersion('25.+')
-        }
-    }
+	implementation 'com.google.firebase:firebase-messaging:20.2.4'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
 }

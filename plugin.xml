@@ -18,8 +18,8 @@
 	<keywords>push, notifications, pushnotifications, apns, GCM, FCM, C2DM, Android push notifications,Push Bots, PushBots, phonegap</keywords>
 
 	<engines>
-		<engine name="cordova" version=">=7.0.0"/>
-		<engine name="cordova-android" version=">=5.2.0"/>
+		<engine name="cordova" version=">=8.0.0"/>
+		<engine name="cordova-android" version=">=8.0.0"/>
 		<engine name="cordova-ios" version=">=4.4.0"/>
 		<engine name="apple-ios" version=">=7.0.0" />
 		<engine name="apple-xcode" version=">=8.0.0" />
@@ -34,6 +34,7 @@
 
 	<!-- android -->
 	<platform name="android">
+        <hook type="after_prepare" src="scripts/apply-to-gradle.properties.js" />
 
         <info>
              In order to run this plugin, you need to Create application on Pushbots.

@@ -17,7 +17,7 @@ cordova plugin add pushbots-cordova-plugin --save
 
 1. Intialize Pushbots in deviceReady section:
 ```javascript
-window.plugins.PushbotsPlugin.initialize("PUSHBOTS_APPLICATIONID", {"android":{"sender_id":"SENDER_ID"}});
+window.plugins.PushbotsPlugin.initialize("5f4bb916f2e7634ba83f1b93", {"android":{"sender_id":"SENDER_ID", "fcm_app_id":"FCM_APP_ID", "web_api_key":"WEB_API_KEY", "project_id":"PROJECT_ID"});
 
 // Only with First time registration
 window.plugins.PushbotsPlugin.on("registered", function(token){

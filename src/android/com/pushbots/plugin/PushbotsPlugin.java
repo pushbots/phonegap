@@ -58,7 +58,7 @@ public class PushbotsPlugin extends CordovaPlugin {
 				final String webAPIKey = options.getString("web_api_key");
 				final String projectId = options.getString("project_id");
 
-				new Pushbots.Builder(this)
+				new Pushbots.Builder(getApplicationContext())
 								.setFcmAppId(fcmappId)
 								.setLogLevel(Pushbots.LOG_LEVEL.DEBUG)
 								.setWebApiKey(webAPIKey)
@@ -69,7 +69,6 @@ public class PushbotsPlugin extends CordovaPlugin {
 								
 				// Pushbots.sharedInstance().setCustomHandler(PushHandler.class);
 				Log.v(TAG,"execute: options=" + options.toString());					
-				Pushbots.sharedInstance().registerForRemoteNotifications();
 						
 				Log.v(TAG,"registerForRemoteNotifications:" + senderId );
 						
