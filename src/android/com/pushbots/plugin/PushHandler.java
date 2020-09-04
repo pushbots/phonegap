@@ -1,7 +1,6 @@
 package com.pushbots.plugin;
 
 import android.content.BroadcastReceiver;
-import android.support.v4.app.NotificationManagerCompat;
 import com.pushbots.push.Pushbots;
 import com.pushbots.push.utils.PBConstants;
 import java.util.HashMap;
@@ -101,7 +100,6 @@ public class PushHandler extends BroadcastReceiver {
             String ButtonId = intent.getStringExtra("button_id");
             Log.d("PB3",  "buttonid: "+  ButtonId + " Poll: " +intent.getBundleExtra(PBConstants.EVENT_POLL_OPEN).getString("poll"));
             //PushUtils.PollClicked(context, intent.getBundleExtra(PBConstants.EVENT_POLL_OPEN), ButtonId);
-            NotificationManagerCompat.from(context).cancelAll();
         }
 	}
 }
