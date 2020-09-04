@@ -72,9 +72,20 @@
 
 	   <config-file target="*-Info.plist" parent="UIBackgroundModes">
 		   <array>
+		   	   <string>location</string>
 			   <string>remote-notification</string>
 		   </array>
 	   </config-file>
+
+        <config-file target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
+            <key>NSLocationWhenInUseUsageDescription</key>
+            <string>Send Geolocated push notifications</string>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
+            <key>NSLocationWhenInUseUsageDescription</key>
+            <string>Send Geolocated push notifications</string>
+        </config-file>
 
        <config-file parent="aps-environment" target="*/Entitlements-Debug.plist">
            <string>development</string>
