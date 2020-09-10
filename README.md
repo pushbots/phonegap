@@ -7,8 +7,6 @@ https://www.pushbots.help/install-pushbots-in-your-app-or-website/cordova-phoneg
 
 ## Installation
 
-This requires phonegap/cordova CLI 9.0.0+ for phonegap build
-
 ```bash
 cordova plugin add pushbots-cordova-plugin --save
 ```
@@ -17,7 +15,7 @@ cordova plugin add pushbots-cordova-plugin --save
 
 1. Intialize Pushbots in deviceReady section:
 ```javascript
-window.plugins.PushbotsPlugin.initialize("5f4bb916f2e7634ba83f1b93", {"android":{"sender_id":"SENDER_ID", "fcm_app_id":"FCM_APP_ID", "web_api_key":"WEB_API_KEY", "project_id":"PROJECT_ID"});
+window.plugins.PushbotsPlugin.initialize("5f4bb916f2e7634ba83f1b93", {"android":{"sender_id":"SENDER_ID", "fcm_app_id":"FCM_APP_ID", "web_api_key":"WEB_API_KEY", "project_id":"PROJECT_ID"}});
 
 // Only with First time registration
 window.plugins.PushbotsPlugin.on("registered", function(token){
@@ -106,16 +104,6 @@ window.plugins.PushbotsPlugin.setPhone("+2100");
  ```
  
 
-## Phonegap build (Only add in phonegap-build) DEPRECARTED
+## Phonegap [DEPRECARTED]
 
 https://blog.phonegap.com/update-for-customers-using-phonegap-and-phonegap-build-cc701c77502c
-
-add Pushbots plugin to config.xml, this is still using old version of phonegap build as it's deprecated by apache, check article above for more details:
-
-```xml
-<gap:plugin name="pushbots-cordova-plugin" spec="1.6.14" source="npm" />
-<preference name="android-minSdkVersion" value="19" />
-<preference name="phonegap-version" value="cli-9.0.0" />
-<preference name="android-build-tool" value="gradle" />
-
- ```
